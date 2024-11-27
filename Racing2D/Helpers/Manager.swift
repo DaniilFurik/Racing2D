@@ -8,9 +8,15 @@
 final class Manager {
     static let shared = Manager()
     
-    var settingModel: SettingModel
+    let settingModel: SettingModel
     
     private init() {
-        settingModel = SettingModel.init(carImage: GlobalConstants.firstCarImage) // брать из user defaults
+        // брать из user defaults
+        settingModel = SettingModel.init(
+            username: "",
+            carImage: GlobalConstants.firstCarImage,
+            barrierImage: GlobalConstants.firstBarrierImage,
+            gameSpeed: 1
+        )
     }
 }

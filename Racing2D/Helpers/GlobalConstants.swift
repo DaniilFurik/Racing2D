@@ -10,4 +10,8 @@ final class GlobalConstants {
     static let secondCarImage = "SecondCar"
     static let thirdCarImage = "ThirdCar"
     static let fourthCarImage = "FourthCar"
+    
+    static let firstBarrierImage = "FirstBarrier"
+    static let secondBarrierImage = "SecondBarrier"
+    static let thirdBarrierImage = "ThirdBarrier"
 }

@@ -12,11 +12,14 @@ import UIKit
 private enum Constants {
     static let carWigth: CGFloat = 75
     static let carHeight: CGFloat = 150
-    static let step: CGFloat = 20
+    static let barrierWidth: CGFloat = 50
+    static let barrierHeight: CGFloat = 50
+    static let step: CGFloat = 30
     static let grassWigth: CGFloat = 75
     static let markupWigth: CGFloat = 6
     
-    static let grassAnimDuration: TimeInterval = 3
+    static let delay: TimeInterval = 1.5
+    static let animDuration: TimeInterval = 4
     static let defaultAnimDuration = 0.3
     
     static let grassLeftImage = "GrassLeft"
@@ -63,14 +66,12 @@ class GameViewController: UIViewController {
         return view
     }()
     
-    private var gameSetting: SettingModel!
+    private var animHeight: CGFloat = 0
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        gameSetting = Manager.shared.settingModel
         
         configureUI()
         startGame()
@@ -84,6 +85,8 @@ private extension GameViewController {
         view.backgroundColor = .darkGray
         view.addGestureRecognizer(controlRecognizer)
         controlRecognizer.addTarget(self, action: #selector(tranclationCar))
+        
+        animHeight = view.frame.height + Constants.barrierHeight
         
         initLeftView()
         initRightView()
@@ -101,9 +104,9 @@ private extension GameViewController {
     func initLeftView() {
         leftView.frame = CGRect(
             x: .zero,
-            y: -view.frame.height,
+            y: -animHeight,
             width: Constants.grassWigth,
-            height: view.frame.height * 2
+            height: animHeight * 2
         )
         view.addSubview(leftView)
         
@@ -112,16 +115,16 @@ private extension GameViewController {
             x: .zero,
             y: .zero,
             width: Constants.grassWigth,
-            height: view.frame.height
+            height: animHeight
         )
         leftView.addSubview(firstImage)
         
         let secondImage = UIImageView(image: UIImage(named: Constants.grassLeftImage))
         secondImage.frame = CGRect(
             x: .zero,
-            y: view.frame.height,
+            y: animHeight,
             width: Constants.grassWigth,
-            height: view.frame.height
+            height: animHeight
         )
         leftView.addSubview(secondImage)
     }
@@ -129,9 +132,9 @@ private extension GameViewController {
     func initRightView() {
         rightView.frame = CGRect(
             x: view.frame.width - Constants.grassWigth,
-            y: -view.frame.height,
+            y: -animHeight,
             width: Constants.grassWigth,
-            height: view.frame.height * 2
+            height: animHeight * 2
         )
         view.addSubview(rightView)
         
@@ -140,16 +143,16 @@ private extension GameViewController {
             x: .zero,
             y: .zero,
             width: Constants.grassWigth,
-            height: view.frame.height
+            height: animHeight
         )
         rightView.addSubview(firstImage)
         
         let secondImage = UIImageView(image: UIImage(named: Constants.grassRightImage))
         secondImage.frame = CGRect(
             x: .zero,
-            y: view.frame.height,
+            y: animHeight,
             width: Constants.grassWigth,
-            height: view.frame.height
+            height: animHeight
         )
         rightView.addSubview(secondImage)
     }
@@ -167,19 +170,19 @@ private extension GameViewController {
             x: .zero,
             y: -centerView.frame.height,
             width: centerView.frame.width,
-            height: centerView.frame.height * 2
+            height: animHeight * 2
         )
         centerView.addSubview(markupView)
 
-        carImageView.image = UIImage(named: gameSetting.carImage)
+        carImageView.image = UIImage(named: Manager.shared.settingModel.carImage)
         centerView.addSubview(carImageView)
     }
     
     func startGame() {
-        UIView.animate(withDuration: Constants.grassAnimDuration, delay: .zero, options: [.curveLinear, .repeat]) {
-            self.leftView.frame.origin.y += self.view.frame.height
-            self.rightView.frame.origin.y += self.view.frame.height
-            self.markupView.frame.origin.y += self.view.frame.height
+        UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear, .repeat]) {
+            self.leftView.frame.origin.y += self.animHeight
+            self.rightView.frame.origin.y += self.animHeight
+            self.markupView.frame.origin.y += self.animHeight
         }
         
         carImageView.frame = CGRect(
@@ -188,11 +191,37 @@ private extension GameViewController {
             width: Constants.carWigth,
             height: Constants.carHeight
         )
+        
+        addBarrier()
     }
     
     func stopGame() {
         leftView.layer.removeAllAnimations()
         rightView.layer.removeAllAnimations()
         markupView.layer.removeAllAnimations()
+    }
+    
+    func addBarrier() {
+        let barrierView = UIImageView()
+        barrierView.image = UIImage(named: Manager.shared.settingModel.barrierImage)
+        barrierView.isUserInteractionEnabled = false
+        barrierView.frame = CGRect(
+            x: .random(in: .zero ... centerView.frame.width - Constants.barrierWidth),
+            y: -Constants.barrierHeight,
+            width: Constants.barrierWidth,
+            height: Constants.barrierHeight
+        )
+        centerView.addSubview(barrierView)
+        
+        UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear]) {
+            barrierView.frame.origin.y += self.animHeight
+        }
+        completion: { _ in
+            barrierView.removeFromSuperview()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delay) {
+            self.addBarrier()
+        }
     }
 }
