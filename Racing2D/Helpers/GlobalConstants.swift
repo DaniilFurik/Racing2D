@@ -6,5 +6,8 @@
 //
 
 final class GlobalConstants {
-    
+    static let firstCarImage = "FirstCar"
+    static let secondCarImage = "SecondCar"
+    static let thirdCarImage = "ThirdCar"
+    static let fourthCarImage = "FourthCar"
 }

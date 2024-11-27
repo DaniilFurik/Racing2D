@@ -10,10 +10,14 @@ import UIKit
 // MARK: - Constants
 
 private enum Constants {
+    static let carWigth: CGFloat = 75
+    static let carHeight: CGFloat = 150
+    static let step: CGFloat = 20
     static let grassWigth: CGFloat = 75
     static let markupWigth: CGFloat = 6
     
     static let grassAnimDuration: TimeInterval = 3
+    static let defaultAnimDuration = 0.3
     
     static let grassLeftImage = "GrassLeft"
     static let grassRightImage = "GrassRight"
@@ -22,32 +26,54 @@ private enum Constants {
 class GameViewController: UIViewController {
     // MARK: - Properties
     
+    private let centerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
     private let leftView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
         return view
     }()
     
     private let rightView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
         return view
     }()
     
     private let markupView: MarkupView = {
         let view = MarkupView()
         view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
         return view
     }()
     
+    private let controlRecognizer = UITapGestureRecognizer()
+    
+    private let carImageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFill
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    private var gameSetting: SettingModel!
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        gameSetting = Manager.shared.settingModel
+        
         configureUI()
-        startAnimations()
+        startGame()
     }
 }
 
@@ -56,10 +82,20 @@ private extension GameViewController {
     
     func configureUI() {
         view.backgroundColor = .darkGray
+        view.addGestureRecognizer(controlRecognizer)
+        controlRecognizer.addTarget(self, action: #selector(tranclationCar))
         
         initLeftView()
         initRightView()
         initCenterView()
+    }
+    
+    @objc func tranclationCar() {
+        let mult = controlRecognizer.location(in: view).x > view.frame.width / 2 ? 1 : -1
+        
+        UIView.animate(withDuration: Constants.defaultAnimDuration) {
+            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
+        }
     }
     
     func initLeftView() {
@@ -119,7 +155,6 @@ private extension GameViewController {
     }
     
     func initCenterView() {
-        let centerView = UIView()
         centerView.frame = CGRect(
             x: leftView.frame.maxX,
             y: .zero,
@@ -135,19 +170,27 @@ private extension GameViewController {
             height: centerView.frame.height * 2
         )
         centerView.addSubview(markupView)
+
+        carImageView.image = UIImage(named: gameSetting.carImage)
+        centerView.addSubview(carImageView)
     }
     
-    func startAnimations() {
+    func startGame() {
         UIView.animate(withDuration: Constants.grassAnimDuration, delay: .zero, options: [.curveLinear, .repeat]) {
             self.leftView.frame.origin.y += self.view.frame.height
             self.rightView.frame.origin.y += self.view.frame.height
             self.markupView.frame.origin.y += self.view.frame.height
         }
         
-        stopAnimations()
+        carImageView.frame = CGRect(
+            x: centerView.frame.width / 4 - Constants.carWigth / 2,
+            y: centerView.frame.height - Constants.carHeight * 1.25,
+            width: Constants.carWigth,
+            height: Constants.carHeight
+        )
     }
     
-    func stopAnimations() {
+    func stopGame() {
         leftView.layer.removeAllAnimations()
         rightView.layer.removeAllAnimations()
         markupView.layer.removeAllAnimations()
