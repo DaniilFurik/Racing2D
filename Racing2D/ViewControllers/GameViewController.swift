@@ -56,9 +56,7 @@ class GameViewController: UIViewController {
         view.isUserInteractionEnabled = false
         return view
     }()
-    
-    private let controlRecognizer = UITapGestureRecognizer()
-    
+
     private let carImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
@@ -66,6 +64,7 @@ class GameViewController: UIViewController {
         return view
     }()
     
+    private let controlRecognizer = UITapGestureRecognizer()
     private var animHeight: CGFloat = 0
     
     // MARK: - Lifecycle
@@ -91,14 +90,6 @@ private extension GameViewController {
         initLeftView()
         initRightView()
         initCenterView()
-    }
-    
-    @objc func tranclationCar() {
-        let mult = controlRecognizer.location(in: view).x > view.frame.width / 2 ? 1 : -1
-        
-        UIView.animate(withDuration: Constants.defaultAnimDuration) {
-            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
-        }
     }
     
     func initLeftView() {
@@ -224,4 +215,13 @@ private extension GameViewController {
             self.addBarrier()
         }
     }
+    
+    @objc func tranclationCar() {
+        let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
+        
+        UIView.animate(withDuration: Constants.defaultAnimDuration) {
+            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
+        }
+    }
+    
 }

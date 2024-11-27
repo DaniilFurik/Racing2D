@@ -19,14 +19,21 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="uta-7o-3ZU">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RACING 2D" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXF-K8-IPt">
+                                <rect key="frame" x="101.00000000000001" y="404.66666666666669" width="191.33333333333337" height="43"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="uta-7o-3ZU" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Ly4-W0-rNn"/>
+                            <constraint firstItem="NXF-K8-IPt" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="R5k-s6-mDl"/>
                             <constraint firstItem="uta-7o-3ZU" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="aSa-Wi-HxN"/>
                             <constraint firstAttribute="bottom" secondItem="uta-7o-3ZU" secondAttribute="bottom" id="hGL-SI-HC7"/>
                             <constraint firstAttribute="trailing" secondItem="uta-7o-3ZU" secondAttribute="trailing" id="ikl-TA-0m6"/>
+                            <constraint firstItem="NXF-K8-IPt" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="rHp-L1-PzL"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -7,23 +7,36 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController {
+// MARK: - Constants
 
+private enum Constants {
+    
+}
+
+class SettingsViewController: UIViewController {
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        // Do any additional setup after loading the view.
+        
+        configureUI()
     }
+}
+
+private extension SettingsViewController {
+    // MARK: - Methods
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func configureUI() {
+        view.backgroundColor = .systemBackground
+        
+        let bckgImage = BackgroundImageView()
+        view.addSubview(bckgImage)
+        
+        NSLayoutConstraint.activate([
+            bckgImage.leftAnchor.constraint(equalTo: view.leftAnchor),
+            bckgImage.rightAnchor.constraint(equalTo: view.rightAnchor),
+            bckgImage.topAnchor.constraint(equalTo: view.topAnchor),
+            bckgImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
-    */
-
 }
