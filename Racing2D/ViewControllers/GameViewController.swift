@@ -10,6 +10,8 @@ import UIKit
 // MARK: - Constants
 
 private enum Constants {
+    static let sizeFont: CGFloat = 24
+    static let scoreWidth: CGFloat = 125
     static let carWigth: CGFloat = 75
     static let carHeight: CGFloat = 150
     static let barrierWidth: CGFloat = 50
@@ -24,6 +26,8 @@ private enum Constants {
     
     static let grassLeftImage = "GrassLeft"
     static let grassRightImage = "GrassRight"
+    
+    static let scoreText = "Score:"
 }
 
 class GameViewController: UIViewController {
@@ -64,8 +68,15 @@ class GameViewController: UIViewController {
         return view
     }()
     
+    private let scoreLabel: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    
     private let controlRecognizer = UITapGestureRecognizer()
     private var animHeight: CGFloat = 0
+    private var score = 0
+    private var isGamming = false
     
     // MARK: - Lifecycle
     
@@ -85,11 +96,14 @@ private extension GameViewController {
         view.addGestureRecognizer(controlRecognizer)
         controlRecognizer.addTarget(self, action: #selector(tranclationCar))
         
+        // барьер должен пройти немного больше высоты экрана, поэтому используем эту переменную вместо высоты экрана
+        // чтобы анимация разметки, обочины и барьеров была с одной скоростью
         animHeight = view.frame.height + Constants.barrierHeight
         
         initLeftView()
         initRightView()
         initCenterView()
+        initScoreView()
     }
     
     func initLeftView() {
@@ -106,16 +120,16 @@ private extension GameViewController {
             x: .zero,
             y: .zero,
             width: Constants.grassWigth,
-            height: animHeight
+            height: leftView.frame.height / 2
         )
         leftView.addSubview(firstImage)
         
         let secondImage = UIImageView(image: UIImage(named: Constants.grassLeftImage))
         secondImage.frame = CGRect(
             x: .zero,
-            y: animHeight,
+            y: leftView.frame.height / 2,
             width: Constants.grassWigth,
-            height: animHeight
+            height: leftView.frame.height / 2
         )
         leftView.addSubview(secondImage)
     }
@@ -134,16 +148,16 @@ private extension GameViewController {
             x: .zero,
             y: .zero,
             width: Constants.grassWigth,
-            height: animHeight
+            height: rightView.frame.height / 2
         )
         rightView.addSubview(firstImage)
         
         let secondImage = UIImageView(image: UIImage(named: Constants.grassRightImage))
         secondImage.frame = CGRect(
             x: .zero,
-            y: animHeight,
+            y: rightView.frame.height / 2,
             width: Constants.grassWigth,
-            height: animHeight
+            height: rightView.frame.height / 2
         )
         rightView.addSubview(secondImage)
     }
@@ -169,7 +183,27 @@ private extension GameViewController {
         centerView.addSubview(carImageView)
     }
     
+    func initScoreView() {
+        guard let frame = navigationController?.navigationBar.frame else { return }
+        
+        let scoreView = UIView()
+        scoreView.frame = CGRect(
+            x: view.frame.width - Constants.scoreWidth,
+            y: frame.minY,
+            width: Constants.scoreWidth,
+            height: frame.height
+        )
+        view.addSubview(scoreView)
+        
+        scoreLabel.font = .systemFont(ofSize: Constants.sizeFont, weight: .bold)
+        scoreLabel.text = "\(Constants.scoreText) \(score)"
+        scoreLabel.frame = scoreView.bounds
+        scoreView.addSubview(scoreLabel)
+    }
+    
     func startGame() {
+        isGamming = true
+        
         UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear, .repeat]) {
             self.leftView.frame.origin.y += self.animHeight
             self.rightView.frame.origin.y += self.animHeight
@@ -187,9 +221,12 @@ private extension GameViewController {
     }
     
     func stopGame() {
+        isGamming = false
+        
         leftView.layer.removeAllAnimations()
         rightView.layer.removeAllAnimations()
         markupView.layer.removeAllAnimations()
+        centerView.layer.removeAllAnimations()
     }
     
     func addBarrier() {
@@ -209,11 +246,19 @@ private extension GameViewController {
         }
         completion: { _ in
             barrierView.removeFromSuperview()
+            self.updateScore()
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delay) {
-            self.addBarrier()
+            if self.isGamming {
+                self.addBarrier()
+            }
         }
+    }
+    
+    func updateScore() {
+        score += 1
+        scoreLabel.text = "\(Constants.scoreText) \(score)"
     }
     
     @objc func tranclationCar() {
@@ -223,5 +268,4 @@ private extension GameViewController {
             self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
         }
     }
-    
 }
