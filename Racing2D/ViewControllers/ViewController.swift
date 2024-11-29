@@ -25,6 +25,17 @@ class ViewController: UIViewController {
         
         configureUI()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        for subview in view.subviews {
+            if subview is NavigationButton {
+                subview.dropShadow()
+                subview.addGradient()
+            }
+        }
+    }
 }
 
 private extension ViewController {

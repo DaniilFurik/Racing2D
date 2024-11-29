@@ -16,11 +16,12 @@ private enum Constants {
     static let carHeight: CGFloat = 150
     static let barrierWidth: CGFloat = 50
     static let barrierHeight: CGFloat = 50
-    static let step: CGFloat = 30
+    static let step: CGFloat = 20
     static let grassWigth: CGFloat = 75
     static let markupWigth: CGFloat = 6
     
-    static let delay: TimeInterval = 1.5
+    static let intersectionDelay: TimeInterval = 0.1
+    static let barrierDelay: TimeInterval = 1.5
     static let animDuration: TimeInterval = 4
     static let defaultAnimDuration = 0.3
     
@@ -28,6 +29,9 @@ private enum Constants {
     static let grassRightImage = "GrassRight"
     
     static let scoreText = "Score:"
+    static let gameOverText = "Game Over"
+    static let restartText = "Restart"
+    static let yourScoreText = "Your score:"
 }
 
 class GameViewController: UIViewController {
@@ -73,9 +77,16 @@ class GameViewController: UIViewController {
         return label
     }()
     
+    private var barrierList =  [UIImageView]()
+    private var intersectionTimer: Timer?
+    private var barrierTimer: Timer?
     private let controlRecognizer = UITapGestureRecognizer()
     private var animHeight: CGFloat = 0
-    private var score = 0
+    private var score = 0 {
+        didSet {
+            scoreLabel.text = "\(Constants.scoreText) \(score)"
+        }
+    }
     private var isGamming = false
     
     // MARK: - Lifecycle
@@ -203,7 +214,7 @@ private extension GameViewController {
     
     func startGame() {
         isGamming = true
-        
+
         UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear, .repeat]) {
             self.leftView.frame.origin.y += self.animHeight
             self.rightView.frame.origin.y += self.animHeight
@@ -216,20 +227,31 @@ private extension GameViewController {
             width: Constants.carWigth,
             height: Constants.carHeight
         )
-        
-        addBarrier()
+    
+        createTimers()
     }
     
     func stopGame() {
         isGamming = false
         
-        leftView.layer.removeAllAnimations()
-        rightView.layer.removeAllAnimations()
-        markupView.layer.removeAllAnimations()
-        centerView.layer.removeAllAnimations()
+        resetViews()
+        resetTimers()
+        
+        let alert = UIAlertController(title: Constants.gameOverText, message: "\(Constants.yourScoreText) \(score)", preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: Constants.restartText, style: .default, handler: { _ in
+            self.score = .zero
+            self.startGame()
+        }))
+        present(alert, animated: true)
+        
+        for barrierView in barrierList {
+            barrierView.removeFromSuperview()
+        }
+        barrierList.removeAll()
     }
     
-    func addBarrier() {
+    @objc func addBarrier() {
         let barrierView = UIImageView()
         barrierView.image = UIImage(named: Manager.shared.settingModel.barrierImage)
         barrierView.isUserInteractionEnabled = false
@@ -240,32 +262,89 @@ private extension GameViewController {
             height: Constants.barrierHeight
         )
         centerView.addSubview(barrierView)
+        barrierList.append(barrierView)
         
         UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear]) {
             barrierView.frame.origin.y += self.animHeight
         }
         completion: { _ in
             barrierView.removeFromSuperview()
-            self.updateScore()
+        }
+    }
+    
+    @objc func checkIntersection() {
+        // если нет машины, то дальше не пойдем
+        guard let carFrame = carImageView.layer.presentation()?.frame else { return }
+        
+        if carFrame.minX < .zero || carFrame.maxX > centerView.frame.width {
+            stopGame()
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delay) {
-            if self.isGamming {
-                self.addBarrier()
+        var removeList = [UIImageView]()
+        
+        for item in barrierList {
+            // если нет барьера, то игнорим его
+            if let barrierFrame = item.layer.presentation()?.frame {
+                if carFrame.maxY < barrierFrame.minY {
+                    score += 1
+                    removeList.append(item)
+                } else {
+                    if carFrame.intersects(barrierFrame) {
+                        stopGame()
+                    }
+                }
+            }
+        }
+        
+        for item in removeList {
+            barrierList.removeAll(where: { $0 === item })
+        }
+    }
+    
+    @objc func tranclationCar() {
+        if isGamming {
+            let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
+            
+            UIView.animate(withDuration: Constants.defaultAnimDuration) {
+                self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
             }
         }
     }
     
-    func updateScore() {
-        score += 1
-        scoreLabel.text = "\(Constants.scoreText) \(score)"
+    func createTimers() {
+        intersectionTimer = Timer.scheduledTimer(
+            timeInterval: Constants.intersectionDelay,
+            target: self,
+            selector: #selector(checkIntersection),
+            userInfo: nil,
+            repeats: true
+        )
+        
+        barrierTimer = Timer.scheduledTimer(
+            timeInterval: Constants.barrierDelay,
+            target: self,
+            selector: #selector(addBarrier),
+            userInfo: nil,
+            repeats: true
+        )
     }
     
-    @objc func tranclationCar() {
-        let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
+    func resetTimers() {
+        barrierTimer?.invalidate()
+        barrierTimer = nil
         
-        UIView.animate(withDuration: Constants.defaultAnimDuration) {
-            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
-        }
+        intersectionTimer?.invalidate()
+        intersectionTimer = nil
+    }
+    
+    func resetViews() {
+        leftView.layer.removeAllAnimations()
+        rightView.layer.removeAllAnimations()
+        markupView.layer.removeAllAnimations()
+        centerView.layer.removeAllAnimations()
+        
+        leftView.frame.origin.y = -animHeight
+        rightView.frame.origin.y = -animHeight
+        markupView.frame.origin.y = -animHeight
     }
 }
