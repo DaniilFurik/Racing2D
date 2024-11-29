@@ -97,6 +97,13 @@ class GameViewController: UIViewController {
         configureUI()
         startGame()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // при закрытии контроллера не останавливаются, поэтому останавливаем тут
+        resetTimers()
+    }
 }
 
 private extension GameViewController {
