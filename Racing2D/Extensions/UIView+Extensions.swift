@@ -33,6 +33,6 @@ extension UIView {
         gradient.endPoint = CGPoint.init(x: 1, y: 1)
         gradient.cornerRadius = layer.cornerRadius
         gradient.frame = bounds
-        layer.insertSublayer(gradient, at: 0)
+        layer.insertSublayer(gradient, at: .zero)
     }
 }

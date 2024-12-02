@@ -6,6 +6,13 @@
 //
 
 final class GlobalConstants {
+    static let slowGameSpeed = 1
+    static let middleGameSpeed = 0.7
+    static let fastGameSpeed = 0.4
+    
+    static let randomBarrier = "RandomBarrier"
+    static let unknownUser = "Unknown User"
+    
     static let firstCarImage = "FirstCar"
     static let secondCarImage = "SecondCar"
     static let thirdCarImage = "ThirdCar"

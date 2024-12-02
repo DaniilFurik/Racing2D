@@ -9,9 +9,9 @@ final class SettingModel {
     let username: String
     let carImage: String
     let barrierImage: String
-    let gameSpeed: Int
+    let gameSpeed: Double
     
-    init(username: String, carImage: String, barrierImage: String, gameSpeed: Int) {
+    init(username: String, carImage: String, barrierImage: String, gameSpeed: Double) {
         self.username = username
         self.carImage = carImage
         self.barrierImage = barrierImage

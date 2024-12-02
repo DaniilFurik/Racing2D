@@ -20,10 +20,10 @@ private enum Constants {
     static let grassWigth: CGFloat = 75
     static let markupWigth: CGFloat = 6
     
-    static let intersectionDelay: TimeInterval = 0.1
+    static let intersectionDelay: TimeInterval = 0.01
     static let barrierDelay: TimeInterval = 1.5
     static let animDuration: TimeInterval = 4
-    static let defaultAnimDuration = 0.3
+    static let defaultAnimDuration: TimeInterval = 0.3
     
     static let grassLeftImage = "GrassLeft"
     static let grassRightImage = "GrassRight"
@@ -81,8 +81,8 @@ class GameViewController: UIViewController {
     private var intersectionTimer: Timer?
     private var barrierTimer: Timer?
     private let controlRecognizer = UITapGestureRecognizer()
-    private var animHeight: CGFloat = 0
-    private var score = 0 {
+    private var animHeight: CGFloat = .zero
+    private var score = Int.zero {
         didSet {
             scoreLabel.text = "\(Constants.scoreText) \(score)"
         }
@@ -222,7 +222,11 @@ private extension GameViewController {
     func startGame() {
         isGamming = true
 
-        UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear, .repeat]) {
+        UIView.animate(
+            withDuration: Constants.animDuration * Manager.shared.settingModel.gameSpeed,
+            delay: .zero,
+            options: [.curveLinear, .repeat]
+        ) {
             self.leftView.frame.origin.y += self.animHeight
             self.rightView.frame.origin.y += self.animHeight
             self.markupView.frame.origin.y += self.animHeight
@@ -260,7 +264,7 @@ private extension GameViewController {
     
     @objc func addBarrier() {
         let barrierView = UIImageView()
-        barrierView.image = UIImage(named: Manager.shared.settingModel.barrierImage)
+        barrierView.image = UIImage(named: Manager.shared.getBarrierImage())
         barrierView.isUserInteractionEnabled = false
         barrierView.frame = CGRect(
             x: .random(in: .zero ... centerView.frame.width - Constants.barrierWidth),
@@ -271,7 +275,7 @@ private extension GameViewController {
         centerView.addSubview(barrierView)
         barrierList.append(barrierView)
         
-        UIView.animate(withDuration: Constants.animDuration, delay: .zero, options: [.curveLinear]) {
+        UIView.animate(withDuration: Constants.animDuration * Manager.shared.settingModel.gameSpeed, delay: .zero, options: [.curveLinear]) {
             barrierView.frame.origin.y += self.animHeight
         }
         completion: { _ in
