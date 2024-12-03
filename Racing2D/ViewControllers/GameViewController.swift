@@ -260,6 +260,15 @@ private extension GameViewController {
         resetViews()
         resetTimers()
         
+        showResultAlert()
+        
+        for barrierView in barrierList {
+            barrierView.removeFromSuperview()
+        }
+        barrierList.removeAll()
+    }
+    
+    func showResultAlert() {
         let alert = UIAlertController(title: Constants.gameOverText, message: "\(Constants.yourScoreText) \(score)", preferredStyle: .alert)
         alert.view.tintColor = .systemGreen
         alert.addAction(UIAlertAction(title: Constants.closeGameText, style: .cancel, handler: { _ in
@@ -270,11 +279,6 @@ private extension GameViewController {
             self.startGame()
         }))
         present(alert, animated: true)
-        
-        for barrierView in barrierList {
-            barrierView.removeFromSuperview()
-        }
-        barrierList.removeAll()
     }
     
     @objc func addBarrier() {
