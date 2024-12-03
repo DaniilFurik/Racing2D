@@ -5,13 +5,13 @@
 //  Created by Даниил on 26.11.24.
 //
 
-final class SettingModel {
+final class AppSettingsModel {
     let username: String
     let carImage: String
     let barrierImage: String
-    let gameSpeed: Double
+    let gameSpeed: GameSpeed
     
-    init(username: String, carImage: String, barrierImage: String, gameSpeed: Double) {
+    init(username: String, carImage: String, barrierImage: String, gameSpeed: GameSpeed) {
         self.username = username
         self.carImage = carImage
         self.barrierImage = barrierImage

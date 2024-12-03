@@ -31,6 +31,7 @@ private enum Constants {
     static let scoreText = "Score:"
     static let gameOverText = "Game Over"
     static let restartText = "Restart"
+    static let closeGameText = "Close Game"
     static let yourScoreText = "Your score:"
 }
 
@@ -87,13 +88,14 @@ class GameViewController: UIViewController {
             scoreLabel.text = "\(Constants.scoreText) \(score)"
         }
     }
-    private var isGamming = false
+    private var gameSpeedMult = GlobalConstants.slowGameSpeed
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        initData()
         configureUI()
         startGame()
     }
@@ -109,14 +111,27 @@ class GameViewController: UIViewController {
 private extension GameViewController {
     // MARK: - Methods
     
+    func initData() {
+        // барьер должен пройти немного больше высоты экрана, поэтому используем эту переменную вместо высоты экрана
+        // чтобы анимация разметки, обочины и барьеров была с одной скоростью
+        animHeight = view.frame.height + Constants.barrierHeight
+        
+        switch Manager.shared.appSettings.gameSpeed {
+        case .fast:
+            gameSpeedMult = GlobalConstants.fastGameSpeed
+            
+        case .medium:
+            gameSpeedMult = GlobalConstants.mediumGameSpeed
+            
+        case .slow:
+            gameSpeedMult = GlobalConstants.slowGameSpeed
+        }
+    }
+    
     func configureUI() {
         view.backgroundColor = .darkGray
         view.addGestureRecognizer(controlRecognizer)
         controlRecognizer.addTarget(self, action: #selector(tranclationCar))
-        
-        // барьер должен пройти немного больше высоты экрана, поэтому используем эту переменную вместо высоты экрана
-        // чтобы анимация разметки, обочины и барьеров была с одной скоростью
-        animHeight = view.frame.height + Constants.barrierHeight
         
         initLeftView()
         initRightView()
@@ -197,7 +212,7 @@ private extension GameViewController {
         )
         centerView.addSubview(markupView)
 
-        carImageView.image = UIImage(named: Manager.shared.settingModel.carImage)
+        carImageView.image = UIImage(named: Manager.shared.appSettings.carImage)
         centerView.addSubview(carImageView)
     }
     
@@ -220,13 +235,7 @@ private extension GameViewController {
     }
     
     func startGame() {
-        isGamming = true
-
-        UIView.animate(
-            withDuration: Constants.animDuration * Manager.shared.settingModel.gameSpeed,
-            delay: .zero,
-            options: [.curveLinear, .repeat]
-        ) {
+        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear, .repeat]) {
             self.leftView.frame.origin.y += self.animHeight
             self.rightView.frame.origin.y += self.animHeight
             self.markupView.frame.origin.y += self.animHeight
@@ -243,13 +252,19 @@ private extension GameViewController {
     }
     
     func stopGame() {
-        isGamming = false
+        if score > .zero {
+            // сохраняем результат
+            Manager.shared.saveRecord(score)
+        }
         
         resetViews()
         resetTimers()
         
         let alert = UIAlertController(title: Constants.gameOverText, message: "\(Constants.yourScoreText) \(score)", preferredStyle: .alert)
         alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: Constants.closeGameText, style: .cancel, handler: { _ in
+            self.navigationController?.popViewController(animated: true)
+        }))
         alert.addAction(UIAlertAction(title: Constants.restartText, style: .default, handler: { _ in
             self.score = .zero
             self.startGame()
@@ -275,7 +290,7 @@ private extension GameViewController {
         centerView.addSubview(barrierView)
         barrierList.append(barrierView)
         
-        UIView.animate(withDuration: Constants.animDuration * Manager.shared.settingModel.gameSpeed, delay: .zero, options: [.curveLinear]) {
+        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear]) {
             barrierView.frame.origin.y += self.animHeight
         }
         completion: { _ in
@@ -313,12 +328,10 @@ private extension GameViewController {
     }
     
     @objc func tranclationCar() {
-        if isGamming {
-            let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
-            
-            UIView.animate(withDuration: Constants.defaultAnimDuration) {
-                self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
-            }
+        let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
+        
+        UIView.animate(withDuration: Constants.defaultAnimDuration) {
+            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
         }
     }
     
