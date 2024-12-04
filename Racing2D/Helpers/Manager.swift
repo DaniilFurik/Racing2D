@@ -59,9 +59,12 @@ final class Manager {
         let array = getRecords()
         
         return [
-            GlobalConstants.fastGameSpeedName:array.filter { $0.gameSpeed == .fast }.sorted {$0.score > $1.score},
-            GlobalConstants.mediumGameSpeedName:array.filter { $0.gameSpeed == .medium }.sorted {$0.score > $1.score},
-            GlobalConstants.slowGameSpeedName:array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score},
+            GlobalConstants.fastGameSpeedName:
+                [RecordModel](array.filter { $0.gameSpeed == .fast }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
+            GlobalConstants.mediumGameSpeedName:
+                [RecordModel](array.filter { $0.gameSpeed == .medium }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
+            GlobalConstants.slowGameSpeedName:
+                [RecordModel](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
         ]
     }
     

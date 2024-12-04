@@ -12,6 +12,8 @@ enum GameSpeed: Codable {
 }
 
 final class GlobalConstants {
+    static let countOfRecords = 3
+    
     static let slowGameSpeed = 1.0
     static let mediumGameSpeed = 0.7
     static let fastGameSpeed = 0.4
