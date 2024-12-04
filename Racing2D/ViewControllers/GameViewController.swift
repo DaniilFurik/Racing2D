@@ -287,13 +287,11 @@ private extension GameViewController {
             height: Constants.carHeight
         )
         
-        _ = Timer.scheduledTimer(withTimeInterval: Constants.barrierDelay, repeats: false, block: { [self] timer in
-            UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear, .repeat]) { [self] in
-                leftView.frame.origin.y += animHeight
-                rightView.frame.origin.y += animHeight
-                markupView.frame.origin.y += animHeight
-            }
-        })
+        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: Constants.barrierDelay, options: [.curveLinear, .repeat]) { [self] in
+            leftView.frame.origin.y += animHeight
+            rightView.frame.origin.y += animHeight
+            markupView.frame.origin.y += animHeight
+        }
     }
     
     func stopGame() {
