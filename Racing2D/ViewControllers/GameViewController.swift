@@ -10,14 +10,16 @@ import UIKit
 // MARK: - Constants
 
 private enum Constants {
-    static let sizeFont: CGFloat = 24
+    static let bigFontSize: CGFloat = 48
+    static let fontSize: CGFloat = 24
     static let scoreWidth: CGFloat = 125
-    static let carWigth: CGFloat = 75
+    static let startGameSize: CGFloat = 200
+    static let carWigth: CGFloat = 70
     static let carHeight: CGFloat = 150
     static let barrierWidth: CGFloat = 50
     static let barrierHeight: CGFloat = 50
     static let step: CGFloat = 20
-    static let grassWigth: CGFloat = 75
+    static let grassWigth: CGFloat = 65
     static let markupWigth: CGFloat = 6
     
     static let intersectionDelay: TimeInterval = 0.01
@@ -33,6 +35,7 @@ private enum Constants {
     static let restartText = "Restart"
     static let closeGameText = "Close Game"
     static let yourScoreText = "Your score:"
+    static let startGameText = "Let's Go"
 }
 
 class GameViewController: UIViewController {
@@ -78,7 +81,17 @@ class GameViewController: UIViewController {
         return label
     }()
     
-    private var barrierList =  [UIImageView]()
+    private let startGameLabel: UILabel = {
+        let label = UILabel()
+        label.text = Constants.startGameText
+        label.isUserInteractionEnabled = false
+        label.font = .systemFont(ofSize: Constants.bigFontSize, weight: .bold)
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
+    }()
+    
+    private var barrierList = [UIImageView]()
     private var intersectionTimer: Timer?
     private var barrierTimer: Timer?
     private let controlRecognizer = UITapGestureRecognizer()
@@ -214,6 +227,14 @@ private extension GameViewController {
 
         carImageView.image = UIImage(named: Manager.shared.appSettings.carImage)
         centerView.addSubview(carImageView)
+        
+        startGameLabel.frame = CGRect(
+            x: centerView.frame.width / 2 - Constants.startGameSize / 2,
+            y: centerView.frame.height / 2 - Constants.startGameSize / 2,
+            width: Constants.startGameSize,
+            height: Constants.startGameSize
+        )
+        centerView.addSubview(startGameLabel)
     }
     
     func initScoreView() {
@@ -228,40 +249,65 @@ private extension GameViewController {
         )
         view.addSubview(scoreView)
         
-        scoreLabel.font = .systemFont(ofSize: Constants.sizeFont, weight: .bold)
+        scoreLabel.font = .systemFont(ofSize: Constants.fontSize, weight: .bold)
         scoreLabel.text = "\(Constants.scoreText) \(score)"
         scoreLabel.frame = scoreView.bounds
         scoreView.addSubview(scoreLabel)
     }
     
     func startGame() {
-        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear, .repeat]) {
-            self.leftView.frame.origin.y += self.animHeight
-            self.rightView.frame.origin.y += self.animHeight
-            self.markupView.frame.origin.y += self.animHeight
-        }
+        // Анимируем label начала игры
+        drawStartLabel()
         
-        carImageView.frame = CGRect(
+        // пересоздаем таймеры
+        createTimers()
+        
+        // анимируем обочину и машину
+        initAnimatedViews()
+    }
+    
+    func drawStartLabel() {
+        startGameLabel.isHidden = false
+        
+        UIView.animate(withDuration: Constants.barrierDelay) {
+            self.startGameLabel.alpha = 0
+            self.startGameLabel.transform = CGAffineTransform(scaleX: 2, y: 2)
+        } completion: { _ in
+            self.startGameLabel.alpha = 1
+            self.startGameLabel.isHidden = true
+            self.startGameLabel.transform = .identity
+        }
+    }
+    
+    func initAnimatedViews() {
+        self.carImageView.frame = CGRect(
             x: centerView.frame.width / 4 - Constants.carWigth / 2,
             y: centerView.frame.height - Constants.carHeight * 1.25,
             width: Constants.carWigth,
             height: Constants.carHeight
         )
-    
-        createTimers()
+        
+        _ = Timer.scheduledTimer(withTimeInterval: Constants.barrierDelay, repeats: false, block: { [self] timer in
+            UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear, .repeat]) { [self] in
+                leftView.frame.origin.y += animHeight
+                rightView.frame.origin.y += animHeight
+                markupView.frame.origin.y += animHeight
+            }
+        })
     }
     
     func stopGame() {
-        if score > .zero {
-            // сохраняем результат
-            Manager.shared.saveRecord(score)
-        }
+        // сохраняем результат
+        Manager.shared.saveRecord(score)
         
+        // cбрасываем таймеры и view
         resetViews()
         resetTimers()
         
+        // показываем результат
         showResultAlert()
         
+        // чистим барьеры ?!?!?!?!?!
         for barrierView in barrierList {
             barrierView.removeFromSuperview()
         }
@@ -341,19 +387,15 @@ private extension GameViewController {
     
     func createTimers() {
         intersectionTimer = Timer.scheduledTimer(
-            timeInterval: Constants.intersectionDelay,
-            target: self,
-            selector: #selector(checkIntersection),
-            userInfo: nil,
-            repeats: true
+            withTimeInterval: Constants.intersectionDelay,
+            repeats: true,
+            block: { _ in self.checkIntersection() }
         )
         
         barrierTimer = Timer.scheduledTimer(
-            timeInterval: Constants.barrierDelay,
-            target: self,
-            selector: #selector(addBarrier),
-            userInfo: nil,
-            repeats: true
+            withTimeInterval: Constants.barrierDelay,
+            repeats: true,
+            block: { _ in self.addBarrier() }
         )
     }
     

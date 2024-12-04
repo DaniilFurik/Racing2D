@@ -31,22 +31,24 @@ final class Manager {
     }
     
     func saveRecord(_ score: Int) {
-        let record = RecordModel(username: appSettings.username, score: score, gameSpeed: appSettings.gameSpeed)
-        
-        var array = getRecords()
-        array.append(record)
-        
-        let data = try? JSONEncoder().encode(array)
-        UserDefaults.standard.set(data, forKey: GlobalConstants.keyRecords)
+        if score > .zero {
+            let record = RecordModel(username: appSettings.username, score: score, gameSpeed: appSettings.gameSpeed)
+            
+            var array = getRecords()
+            array.append(record)
+            
+            let data = try? JSONEncoder().encode(array)
+            UserDefaults.standard.set(data, forKey: GlobalConstants.keyRecords)
+        }
     }
     
     func getSortedRecords() -> Dictionary<String, [RecordModel]> {
         let array = getRecords()
         
         return [
-            GlobalConstants.fastGameSpeedName:array.filter { $0.gameSpeed == .fast },
-            GlobalConstants.mediumGameSpeedName:array.filter { $0.gameSpeed == .medium },
-            GlobalConstants.slowGameSpeedName:array.filter { $0.gameSpeed == .slow },
+            GlobalConstants.fastGameSpeedName:array.filter { $0.gameSpeed == .fast }.sorted {$0.score > $1.score},
+            GlobalConstants.mediumGameSpeedName:array.filter { $0.gameSpeed == .medium }.sorted {$0.score > $1.score},
+            GlobalConstants.slowGameSpeedName:array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score},
         ]
     }
     
