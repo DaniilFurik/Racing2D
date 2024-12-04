@@ -22,6 +22,19 @@ final class Manager {
         )
     }
     
+    func getMultGameSpeed() -> Double {
+        switch appSettings.gameSpeed {
+        case .fast:
+            return GlobalConstants.fastGameSpeed
+            
+        case .medium:
+            return GlobalConstants.mediumGameSpeed
+            
+        case .slow:
+            return GlobalConstants.slowGameSpeed
+        }
+    }
+    
     func getBarrierImage() -> String {
         if appSettings.barrierImage != GlobalConstants.randomBarrier {
             return appSettings.barrierImage

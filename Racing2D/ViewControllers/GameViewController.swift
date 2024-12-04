@@ -18,12 +18,12 @@ private enum Constants {
     static let carHeight: CGFloat = 150
     static let barrierWidth: CGFloat = 50
     static let barrierHeight: CGFloat = 50
-    static let step: CGFloat = 20
+    static let step: CGFloat = 3
     static let grassWigth: CGFloat = 65
     static let markupWigth: CGFloat = 6
     
-    static let intersectionDelay: TimeInterval = 0.01
-    static let barrierDelay: TimeInterval = 1.5
+    static let smallDelay: TimeInterval = 0.01
+    static let middleDelay: TimeInterval = 1.5
     static let animDuration: TimeInterval = 4
     static let defaultAnimDuration: TimeInterval = 0.3
     
@@ -94,7 +94,7 @@ class GameViewController: UIViewController {
     private var barrierList = [UIImageView]()
     private var intersectionTimer: Timer?
     private var barrierTimer: Timer?
-    private let controlRecognizer = UITapGestureRecognizer()
+    private let controlRecognizer = UILongPressGestureRecognizer()
     private var animHeight: CGFloat = .zero
     private var score = Int.zero {
         didSet {
@@ -102,6 +102,7 @@ class GameViewController: UIViewController {
         }
     }
     private var gameSpeedMult = GlobalConstants.slowGameSpeed
+    private var isMoving = false
     
     // MARK: - Lifecycle
     
@@ -129,22 +130,14 @@ private extension GameViewController {
         // чтобы анимация разметки, обочины и барьеров была с одной скоростью
         animHeight = view.frame.height + Constants.barrierHeight
         
-        switch Manager.shared.appSettings.gameSpeed {
-        case .fast:
-            gameSpeedMult = GlobalConstants.fastGameSpeed
-            
-        case .medium:
-            gameSpeedMult = GlobalConstants.mediumGameSpeed
-            
-        case .slow:
-            gameSpeedMult = GlobalConstants.slowGameSpeed
-        }
+        gameSpeedMult = Manager.shared.getMultGameSpeed()
     }
     
     func configureUI() {
         view.backgroundColor = .darkGray
         view.addGestureRecognizer(controlRecognizer)
         controlRecognizer.addTarget(self, action: #selector(tranclationCar))
+        controlRecognizer.minimumPressDuration = Constants.smallDelay
         
         initLeftView()
         initRightView()
@@ -259,8 +252,11 @@ private extension GameViewController {
         // Анимируем label начала игры
         drawStartLabel()
         
-        // пересоздаем таймеры
-        createTimers()
+        // запускаем с задержкой, потому что при ускорении игры - ускоряется спавн препядствий
+        _ = Timer.scheduledTimer(withTimeInterval: Constants.middleDelay - Constants.middleDelay * gameSpeedMult, repeats: false) { _ in
+            // пересоздаем таймеры
+            self.createTimers()
+        }
         
         // анимируем обочину и машину
         initAnimatedViews()
@@ -269,8 +265,8 @@ private extension GameViewController {
     func drawStartLabel() {
         startGameLabel.isHidden = false
         
-        UIView.animate(withDuration: Constants.barrierDelay) {
-            self.startGameLabel.alpha = 0
+        UIView.animate(withDuration: Constants.middleDelay) {
+            self.startGameLabel.alpha = .zero
             self.startGameLabel.transform = CGAffineTransform(scaleX: 2, y: 2)
         } completion: { _ in
             self.startGameLabel.alpha = 1
@@ -287,7 +283,7 @@ private extension GameViewController {
             height: Constants.carHeight
         )
         
-        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: Constants.barrierDelay, options: [.curveLinear, .repeat]) { [self] in
+        UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: Constants.middleDelay, options: [.curveLinear, .repeat]) { [self] in
             leftView.frame.origin.y += animHeight
             rightView.frame.origin.y += animHeight
             markupView.frame.origin.y += animHeight
@@ -376,22 +372,42 @@ private extension GameViewController {
     }
     
     @objc func tranclationCar() {
-        let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
-        
-        UIView.animate(withDuration: Constants.defaultAnimDuration) {
-            self.carImageView.frame.origin.x += Constants.step * CGFloat(mult)
+        switch controlRecognizer.state {
+        case .began:
+            // Начинаем перемещение
+            isMoving = true
+            moveCar()
+            
+        case .ended, .cancelled:
+            // Останавливаем перемещение
+            isMoving = false
+            
+        default:
+            break
+        }
+    }
+    
+    func moveCar() {
+        if isMoving {
+            let mult = controlRecognizer.location(in: view).x > view.center.x ? 1 : -1
+            
+            UIView.animate(withDuration: Constants.smallDelay, delay: .zero, options: [.curveLinear]) {
+                self.carImageView.frame.origin.x += Constants.step * CGFloat(mult) / self.gameSpeedMult
+            } completion: { _ in
+                self.moveCar()
+            }
         }
     }
     
     func createTimers() {
         intersectionTimer = Timer.scheduledTimer(
-            withTimeInterval: Constants.intersectionDelay,
+            withTimeInterval: Constants.smallDelay,
             repeats: true,
             block: { _ in self.checkIntersection() }
         )
         
         barrierTimer = Timer.scheduledTimer(
-            withTimeInterval: Constants.barrierDelay,
+            withTimeInterval: Constants.middleDelay * gameSpeedMult,
             repeats: true,
             block: { _ in self.addBarrier() }
         )
