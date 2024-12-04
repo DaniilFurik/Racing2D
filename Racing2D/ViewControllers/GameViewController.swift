@@ -91,7 +91,6 @@ class GameViewController: UIViewController {
         return label
     }()
     
-    private var barrierList = [UIImageView]()
     private var intersectionTimer: Timer?
     private var barrierTimer: Timer?
     private let controlRecognizer = UILongPressGestureRecognizer()
@@ -103,6 +102,7 @@ class GameViewController: UIViewController {
     }
     private var gameSpeedMult = GlobalConstants.slowGameSpeed
     private var isMoving = false
+    private var isGamming = false
     
     // MARK: - Lifecycle
     
@@ -272,6 +272,8 @@ private extension GameViewController {
             self.startGameLabel.alpha = 1
             self.startGameLabel.isHidden = true
             self.startGameLabel.transform = .identity
+            
+            self.isGamming = true
         }
     }
     
@@ -291,6 +293,8 @@ private extension GameViewController {
     }
     
     func stopGame() {
+        isGamming = false
+        
         // сохраняем результат
         Manager.shared.saveRecord(score)
         
@@ -300,12 +304,6 @@ private extension GameViewController {
         
         // показываем результат
         showResultAlert()
-        
-        // чистим барьеры ?!?!?!?!?!
-        for barrierView in barrierList {
-            barrierView.removeFromSuperview()
-        }
-        barrierList.removeAll()
     }
     
     func showResultAlert() {
@@ -321,7 +319,7 @@ private extension GameViewController {
         present(alert, animated: true)
     }
     
-    @objc func addBarrier() {
+    func addBarrier() {
         let barrierView = UIImageView()
         barrierView.image = UIImage(named: Manager.shared.getBarrierImage())
         barrierView.isUserInteractionEnabled = false
@@ -332,42 +330,39 @@ private extension GameViewController {
             height: Constants.barrierHeight
         )
         centerView.addSubview(barrierView)
-        barrierList.append(barrierView)
         
         UIView.animate(withDuration: Constants.animDuration * gameSpeedMult, delay: .zero, options: [.curveLinear]) {
             barrierView.frame.origin.y += self.animHeight
         }
         completion: { _ in
-            barrierView.removeFromSuperview()
+            if self.isGamming {
+                barrierView.removeFromSuperview()
+                self.score += 1
+            }
         }
     }
     
-    @objc func checkIntersection() {
+    func checkIntersection() {
         // если нет машины, то дальше не пойдем
         guard let carFrame = carImageView.layer.presentation()?.frame else { return }
         
+        // если зацепили обочину
         if carFrame.minX < .zero || carFrame.maxX > centerView.frame.width {
             stopGame()
         }
         
-        var removeList = [UIImageView]()
-        
-        for item in barrierList {
-            // если нет барьера, то игнорим его
-            if let barrierFrame = item.layer.presentation()?.frame {
-                if carFrame.maxY < barrierFrame.minY {
-                    score += 1
-                    removeList.append(item)
-                } else {
-                    if carFrame.intersects(barrierFrame) {
-                        stopGame()
+        // если зацепили препядствие
+        for subview in centerView.subviews {
+            if let imageView = subview as? UIImageView {
+                if imageView.image == UIImage(named: Manager.shared.getBarrierImage()) {
+                    if let frame = imageView.layer.presentation()?.frame {
+                        if carFrame.intersects(frame) {
+                            imageView.layer.removeAllAnimations()
+                            stopGame()
+                        }
                     }
                 }
             }
-        }
-        
-        for item in removeList {
-            barrierList.removeAll(where: { $0 === item })
         }
     }
     
@@ -424,9 +419,11 @@ private extension GameViewController {
     func resetViews() {
         leftView.layer.removeAllAnimations()
         rightView.layer.removeAllAnimations()
-        markupView.layer.removeAllAnimations()
-        centerView.layer.removeAllAnimations()
         
+        for subview in centerView.subviews {
+            subview.layer.removeAllAnimations()
+        }
+
         leftView.frame.origin.y = -animHeight
         rightView.frame.origin.y = -animHeight
         markupView.frame.origin.y = -animHeight
