@@ -8,7 +8,7 @@
 import UIKit
 
 private enum Constants {
-    static let cornerRadius: CGFloat = 10
+    static let cornerRadius: CGFloat = 16
     static let offset: CGFloat = 10
     static let opacity: Float = 0.75
 }
@@ -34,5 +34,9 @@ extension UIView {
         gradient.cornerRadius = layer.cornerRadius
         gradient.frame = bounds
         layer.insertSublayer(gradient, at: .zero)
+    }
+    
+    func roundCorners() {
+        layer.cornerRadius = Constants.cornerRadius
     }
 }

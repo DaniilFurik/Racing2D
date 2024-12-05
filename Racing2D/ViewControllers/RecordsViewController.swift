@@ -95,8 +95,8 @@ private extension RecordsViewController {
             bckgImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.verticalSpacing),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -Constants.horizontalSpacing),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.horizontalSpacing),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
