@@ -273,7 +273,7 @@ private extension GameViewController {
             self.startGameLabel.isHidden = true
             self.startGameLabel.transform = .identity
             
-            self.isGamming = true
+            self.disableControls(false)
         }
     }
     
@@ -293,7 +293,7 @@ private extension GameViewController {
     }
     
     func stopGame() {
-        isGamming = false
+        disableControls(true)
         
         // сохраняем результат
         Manager.shared.saveRecord(score)
@@ -357,7 +357,6 @@ private extension GameViewController {
                 if imageView.image == UIImage(named: Manager.shared.getBarrierImage()) {
                     if let frame = imageView.layer.presentation()?.frame {
                         if carFrame.intersects(frame) {
-                            imageView.layer.removeAllAnimations()
                             stopGame()
                         }
                     }
@@ -373,7 +372,7 @@ private extension GameViewController {
             isMoving = true
             moveCar()
             
-        case .ended, .cancelled:
+        case .ended, .cancelled, .failed:
             // Останавливаем перемещение
             isMoving = false
             
@@ -406,6 +405,11 @@ private extension GameViewController {
             repeats: true,
             block: { _ in self.addBarrier() }
         )
+    }
+    
+    func disableControls(_ flag: Bool) {
+        controlRecognizer.isEnabled = !flag
+        isGamming = !flag
     }
     
     func resetTimers() {
