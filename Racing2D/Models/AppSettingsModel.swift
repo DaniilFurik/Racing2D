@@ -5,16 +5,16 @@
 //  Created by Даниил on 26.11.24.
 //
 
-final class AppSettingsModel {
-    let username: String
-    let carImage: String
-    let barrierImage: String
-    let gameSpeed: GameSpeed
+final class AppSettingsModel: Codable {
+    var username: String
+    var carImage: String
+    var barrierImage: String
+    var gameSpeed: GameSpeed
     
-    init(username: String, carImage: String, barrierImage: String, gameSpeed: GameSpeed) {
-        self.username = username
-        self.carImage = carImage
-        self.barrierImage = barrierImage
-        self.gameSpeed = gameSpeed
+    init() {
+        username =  GlobalConstants.unknownUser
+        carImage = GlobalConstants.firstCarImage
+        barrierImage = GlobalConstants.randomBarrier
+        gameSpeed = GameSpeed.slow
     }
 }

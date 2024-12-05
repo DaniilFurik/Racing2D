@@ -10,16 +10,15 @@ import Foundation
 final class Manager {
     static let shared = Manager()
     
-    let appSettings: AppSettingsModel
+    var appSettings = AppSettingsModel()
     
     private init() {
-        // брать из user defaults
-        appSettings = AppSettingsModel.init(
-            username: GlobalConstants.unknownUser,
-            carImage: GlobalConstants.firstCarImage,
-            barrierImage: GlobalConstants.randomBarrier,
-            gameSpeed: GameSpeed.slow
-        )
+        appSettings = getAppSettings()
+    }
+    
+    func saveAppSettings() {
+        let data = try? JSONEncoder().encode(appSettings)
+        UserDefaults.standard.set(data, forKey: GlobalConstants.keyAppSettings)
     }
     
     func getMultGameSpeed() -> Double {
@@ -66,6 +65,13 @@ final class Manager {
             GlobalConstants.slowGameSpeedName:
                 [RecordModel](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
         ]
+    }
+    
+    private func getAppSettings() -> AppSettingsModel {
+        guard let data = UserDefaults.standard.data(forKey: GlobalConstants.keyAppSettings) else { return self.appSettings }
+        guard let settings = try? JSONDecoder().decode(AppSettingsModel.self, from: data) else { return self.appSettings }
+        
+        return settings
     }
     
     private func getRecords() -> [RecordModel] {

@@ -252,7 +252,7 @@ private extension GameViewController {
         // Анимируем label начала игры
         drawStartLabel()
         
-        // запускаем с задержкой, потому что при ускорении игры - ускоряется спавн препядствий
+        // запускаем с задержкой, потому что при ускорении игры - ускоряется спавн препятствий
         _ = Timer.scheduledTimer(withTimeInterval: Constants.middleDelay - Constants.middleDelay * gameSpeedMult, repeats: false) { _ in
             // пересоздаем таймеры
             self.createTimers()
@@ -351,7 +351,7 @@ private extension GameViewController {
             stopGame()
         }
         
-        // если зацепили препядствие
+        // если зацепили препятствие
         for subview in centerView.subviews {
             if let imageView = subview as? UIImageView {
                 if imageView.image == UIImage(named: Manager.shared.getBarrierImage()) {

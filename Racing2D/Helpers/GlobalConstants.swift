@@ -5,10 +5,10 @@
 //  Created by Даниил on 25.11.24.
 //
 
-enum GameSpeed: Codable {
-    case slow
-    case medium
-    case fast
+enum GameSpeed: Int, Codable {
+    case slow = 0
+    case medium = 1
+    case fast = 2
 }
 
 final class GlobalConstants {
@@ -18,9 +18,9 @@ final class GlobalConstants {
     static let mediumGameSpeed = 0.7
     static let fastGameSpeed = 0.4
     
-    static let slowGameSpeedName = "Slow Speed"
-    static let mediumGameSpeedName = "Middle Speed"
-    static let fastGameSpeedName = "Fast Speed"
+    static let slowGameSpeedName = "Slow"
+    static let mediumGameSpeedName = "Middle"
+    static let fastGameSpeedName = "Fast"
     
     static let randomBarrier = "RandomBarrier"
     static let unknownUser = "Unknown"
@@ -35,4 +35,5 @@ final class GlobalConstants {
     static let thirdBarrierImage = "ThirdBarrier"
     
     static let keyRecords = "KeyRecords"
+    static let keyAppSettings = "KeyAppSettings"
 }
