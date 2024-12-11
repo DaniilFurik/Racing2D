@@ -26,14 +26,12 @@ class RecordTableCell: UITableViewCell {
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: Constants.bigFontSize, weight: .semibold)
         return label
     }()
     
     private let scoreLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: Constants.bigFontSize, weight: .semibold)
         return label
     }()
     
@@ -59,38 +57,34 @@ extension RecordTableCell {
         contentView.addSubview(usernameLabel)
         contentView.addSubview(scoreLabel)
         
-        let firstLabel = UILabel()
-        firstLabel.translatesAutoresizingMaskIntoConstraints = false
-        firstLabel.text = Constants.usernameText
-        firstLabel.font = .systemFont(ofSize: Constants.smallFontSize)
-        contentView.addSubview(firstLabel)
-        
-        let secondLabel = UILabel()
-        secondLabel.translatesAutoresizingMaskIntoConstraints = false
-        secondLabel.text = Constants.scoreText
-        secondLabel.font = .systemFont(ofSize: Constants.smallFontSize)
-        contentView.addSubview(secondLabel)
-        
         NSLayoutConstraint.activate([
             usernameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.verticalSpacing),
-            usernameLabel.leftAnchor.constraint(equalTo: firstLabel.rightAnchor),
+            usernameLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.horizontalSpacing),
             usernameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.horizontalSpacing),
             
-            firstLabel.firstBaselineAnchor.constraint(equalTo: usernameLabel.firstBaselineAnchor),
-            firstLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.horizontalSpacing),
-            
-            secondLabel.firstBaselineAnchor.constraint(equalTo: scoreLabel.firstBaselineAnchor),
-            secondLabel.leftAnchor.constraint(equalTo: firstLabel.leftAnchor),
-            
             scoreLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: Constants.verticalSpacing),
-            scoreLabel.leftAnchor.constraint(equalTo: secondLabel.rightAnchor),
+            scoreLabel.leftAnchor.constraint(equalTo: usernameLabel.leftAnchor),
             scoreLabel.rightAnchor.constraint(equalTo: usernameLabel.rightAnchor),
             scoreLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalSpacing)
         ])
     }
     
     func initData(data: RecordModel) {
-        usernameLabel.text = data.username
-        scoreLabel.text = data.score.description
+        let firstAttr = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: Constants.smallFontSize),
+        ]
+        
+        let usernameAttrSrting = NSMutableAttributedString(string: Constants.usernameText, attributes: firstAttr)
+        let scoreAttrSrting = NSMutableAttributedString(string: Constants.scoreText, attributes: firstAttr)
+        
+        let secondAttr = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: Constants.bigFontSize, weight: .semibold),
+        ]
+        
+        usernameAttrSrting.append(NSAttributedString(string: data.username, attributes: secondAttr))
+        scoreAttrSrting.append(NSAttributedString(string: data.score.description, attributes: secondAttr))
+        
+        usernameLabel.attributedText = usernameAttrSrting
+        scoreLabel.attributedText = scoreAttrSrting
     }
 }

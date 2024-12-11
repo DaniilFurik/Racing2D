@@ -14,7 +14,7 @@ class BackgroundImageView: UIImageView {
         self.init(frame: .zero)
         
         translatesAutoresizingMaskIntoConstraints = false
-        image = UIImage(named: "Background")
+        image = UIImage(named: GlobalConstants.backgroundImage)
         contentMode = .scaleAspectFill
     }
 }

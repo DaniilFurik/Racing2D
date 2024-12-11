@@ -18,9 +18,9 @@ final class GlobalConstants {
     static let mediumGameSpeed = 0.7
     static let fastGameSpeed = 0.4
     
-    static let slowGameSpeedName = "Slow"
-    static let mediumGameSpeedName = "Middle"
-    static let fastGameSpeedName = "Fast"
+    static let slowGameSpeedName = "Slow Speed"
+    static let mediumGameSpeedName = "Middle Speed"
+    static let fastGameSpeedName = "Fast Speed"
     
     static let randomBarrier = "RandomBarrier"
     static let unknownUser = "Unknown"
@@ -33,6 +33,8 @@ final class GlobalConstants {
     static let firstBarrierImage = "FirstBarrier"
     static let secondBarrierImage = "SecondBarrier"
     static let thirdBarrierImage = "ThirdBarrier"
+    
+    static let backgroundImage = "Background"
     
     static let keyRecords = "KeyRecords"
     static let keyAppSettings = "KeyAppSettings"
