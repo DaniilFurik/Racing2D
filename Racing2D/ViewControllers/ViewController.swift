@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 // MARK: - Constants
 
@@ -65,20 +66,22 @@ private extension ViewController {
         }), for: .touchUpInside)
         view.addSubview(settingsButton)
         
-        NSLayoutConstraint.activate([
-            recordsButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            recordsButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            startGameButton.bottomAnchor.constraint(equalTo: recordsButton.topAnchor, constant: -Constants.verticalSpacing),
-            startGameButton.centerXAnchor.constraint(equalTo: recordsButton.centerXAnchor),
-            
-            settingsButton.topAnchor.constraint(equalTo: recordsButton.bottomAnchor, constant: Constants.verticalSpacing),
-            settingsButton.centerXAnchor.constraint(equalTo: recordsButton.centerXAnchor),
-            
-            bckgImage.leftAnchor.constraint(equalTo: view.leftAnchor),
-            bckgImage.rightAnchor.constraint(equalTo: view.rightAnchor),
-            bckgImage.topAnchor.constraint(equalTo: view.topAnchor),
-            bckgImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        bckgImage.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+        }
+        
+        recordsButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        startGameButton.snp.makeConstraints { make in
+            make.centerX.equalTo(recordsButton)
+            make.bottom.equalTo(recordsButton.snp.top).offset(-Constants.verticalSpacing)
+        }
+        
+        settingsButton.snp.makeConstraints { make in
+            make.centerX.equalTo(recordsButton)
+            make.top.equalTo(recordsButton.snp.bottom).offset(Constants.verticalSpacing)
+        }
     }
 }

@@ -45,12 +45,12 @@ class RecordsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         headerView.addSubview(titleLabel)
 
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: Constants.horizontalSpacing),
-            titleLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -Constants.horizontalSpacing / 4),
-        ])
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(headerView.snp.left).offset(Constants.horizontalSpacing)
+            make.right.equalTo(headerView.snp.right).inset(Constants.horizontalSpacing)
+            make.top.equalTo(headerView.snp.top)
+            make.bottom.equalTo(headerView.snp.bottom).inset(Constants.horizontalSpacing / 4)
+        }
 
         return headerView
     }
@@ -88,17 +88,14 @@ private extension RecordsViewController {
         tableView.register(RecordTableCell.self, forCellReuseIdentifier: Constants.recordCellId)
         view.addSubview(tableView)
         
-        NSLayoutConstraint.activate([
-            bckgImage.leftAnchor.constraint(equalTo: view.leftAnchor),
-            bckgImage.rightAnchor.constraint(equalTo: view.rightAnchor),
-            bckgImage.topAnchor.constraint(equalTo: view.topAnchor),
-            bckgImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.verticalSpacing),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        bckgImage.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+        }
+        
+        tableView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(Constants.verticalSpacing)
+        }
     }
     
     func getRecordsForSection(_ section: Int) -> [RecordModel] {

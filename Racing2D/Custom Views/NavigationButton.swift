@@ -23,7 +23,6 @@ class NavigationButton: UIButton {
     convenience init(title: String) {
         self.init(type: .system)
         
-        translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = Constants.cornerRadius
         layer.borderWidth = Constants.borderWidth
         backgroundColor = .systemGreen

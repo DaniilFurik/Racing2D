@@ -25,13 +25,13 @@ class RecordTableCell: UITableViewCell {
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.lineBreakMode = .byTruncatingHead
         return label
     }()
     
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.lineBreakMode = .byTruncatingHead
         return label
     }()
     
@@ -57,16 +57,17 @@ extension RecordTableCell {
         contentView.addSubview(usernameLabel)
         contentView.addSubview(scoreLabel)
         
-        NSLayoutConstraint.activate([
-            usernameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.verticalSpacing),
-            usernameLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.horizontalSpacing),
-            usernameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.horizontalSpacing),
-            
-            scoreLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: Constants.verticalSpacing),
-            scoreLabel.leftAnchor.constraint(equalTo: usernameLabel.leftAnchor),
-            scoreLabel.rightAnchor.constraint(equalTo: usernameLabel.rightAnchor),
-            scoreLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalSpacing)
-        ])
+        usernameLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Constants.verticalSpacing)
+            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
+            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+        }
+        
+        scoreLabel.snp.makeConstraints { make in
+            make.top.equalTo(usernameLabel.snp.bottom).offset(Constants.verticalSpacing)
+            make.left.right.equalTo(usernameLabel)
+            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
+        }
     }
     
     func initData(data: RecordModel) {

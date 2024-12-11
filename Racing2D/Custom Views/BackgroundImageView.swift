@@ -13,7 +13,6 @@ class BackgroundImageView: UIImageView {
     convenience init() {
         self.init(frame: .zero)
         
-        translatesAutoresizingMaskIntoConstraints = false
         image = UIImage(named: GlobalConstants.backgroundImage)
         contentMode = .scaleAspectFill
     }
