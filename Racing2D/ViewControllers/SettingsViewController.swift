@@ -80,7 +80,7 @@ private extension SettingsViewController {
         usernameTextField.text = Manager.shared.appSettings.username
         usernameTextField.addAction(UIAction(handler: { _ in
             Manager.shared.appSettings.username = self.usernameTextField.text ?? GlobalConstants.unknownUser
-            Manager.shared.saveAppSettings()
+            StorageManager.shared.saveAppSettings()
         }), for: .editingDidEnd)
         userInfoView.addSubview(usernameTextField)
         
@@ -152,7 +152,7 @@ private extension SettingsViewController {
         segmentedControl.selectedSegmentIndex = Manager.shared.appSettings.gameSpeed.rawValue
         segmentedControl.addAction(UIAction(handler: { _ in
             Manager.shared.appSettings.gameSpeed = GameSpeed(rawValue: self.segmentedControl.selectedSegmentIndex) ??  Manager.shared.appSettings.gameSpeed
-            Manager.shared.saveAppSettings()
+            StorageManager.shared.saveAppSettings()
         }), for: .valueChanged)
         gameSpeedView.addSubview(segmentedControl)
         

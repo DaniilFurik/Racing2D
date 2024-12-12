@@ -5,6 +5,11 @@
 //  Created by Даниил on 25.11.24.
 //
 
+extension String {
+    static let keyRecords = "KeyRecords"
+    static let keyAppSettings = "KeyAppSettings"
+}
+
 enum GameSpeed: Int, Codable {
     case slow = 0
     case medium = 1
@@ -35,7 +40,4 @@ final class GlobalConstants {
     static let thirdBarrierImage = "ThirdBarrier"
     
     static let backgroundImage = "Background"
-    
-    static let keyRecords = "KeyRecords"
-    static let keyAppSettings = "KeyAppSettings"
 }

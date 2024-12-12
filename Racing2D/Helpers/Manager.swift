@@ -13,12 +13,7 @@ final class Manager {
     var appSettings = AppSettingsModel()
     
     private init() {
-        appSettings = getAppSettings()
-    }
-    
-    func saveAppSettings() {
-        let data = try? JSONEncoder().encode(appSettings)
-        UserDefaults.standard.set(data, forKey: GlobalConstants.keyAppSettings)
+        appSettings = StorageManager.shared.getAppSettings()
     }
     
     func getMultGameSpeed() -> Double {
@@ -42,20 +37,8 @@ final class Manager {
         return [GlobalConstants.firstBarrierImage, GlobalConstants.secondBarrierImage, GlobalConstants.thirdBarrierImage].randomElement()!
     }
     
-    func saveRecord(_ score: Int) {
-        if score > .zero {
-            let record = RecordModel(username: appSettings.username, score: score, gameSpeed: appSettings.gameSpeed)
-            
-            var array = getRecords()
-            array.append(record)
-            
-            let data = try? JSONEncoder().encode(array)
-            UserDefaults.standard.set(data, forKey: GlobalConstants.keyRecords)
-        }
-    }
-    
     func getSortedRecords() -> Dictionary<String, [RecordModel]> {
-        let array = getRecords()
+        let array = StorageManager.shared.getRecords()
         
         return [
             GlobalConstants.fastGameSpeedName:
@@ -65,19 +48,5 @@ final class Manager {
             GlobalConstants.slowGameSpeedName:
                 [RecordModel](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
         ]
-    }
-    
-    private func getAppSettings() -> AppSettingsModel {
-        guard let data = UserDefaults.standard.data(forKey: GlobalConstants.keyAppSettings) else { return self.appSettings }
-        guard let settings = try? JSONDecoder().decode(AppSettingsModel.self, from: data) else { return self.appSettings }
-        
-        return settings
-    }
-    
-    private func getRecords() -> [RecordModel] {
-        guard let data = UserDefaults.standard.data(forKey: GlobalConstants.keyRecords) else { return [] }
-        guard let list = try? JSONDecoder().decode([RecordModel].self, from: data) else { return [] }
-        
-        return list
     }
 }

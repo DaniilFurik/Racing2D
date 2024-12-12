@@ -296,7 +296,7 @@ private extension GameViewController {
         disableControls(true)
         
         // сохраняем результат
-        Manager.shared.saveRecord(score)
+        StorageManager.shared.saveRecord(score)
         
         // cбрасываем таймеры и view
         resetViews()
