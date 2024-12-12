@@ -41,7 +41,6 @@ class RecordsViewController: UIViewController, UITableViewDataSource, UITableVie
         titleLabel.text = titles[section]
         titleLabel.textColor = .label
         titleLabel.font = .systemFont(ofSize: titleLabel.font.pointSize, weight: .semibold)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         headerView.addSubview(titleLabel)
 
@@ -81,7 +80,6 @@ private extension RecordsViewController {
         view.addSubview(bckgImage)
         
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .clear
         tableView.delegate = self
         tableView.dataSource = self

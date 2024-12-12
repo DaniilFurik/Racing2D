@@ -50,6 +50,12 @@ class SettingsViewController: UIViewController {
         
         configureUI()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        StorageManager.shared.saveAppSettings()
+    }
 }
 
 private extension SettingsViewController {
@@ -80,8 +86,7 @@ private extension SettingsViewController {
         usernameTextField.text = Manager.shared.appSettings.username
         usernameTextField.addAction(UIAction(handler: { _ in
             Manager.shared.appSettings.username = self.usernameTextField.text ?? GlobalConstants.unknownUser
-            StorageManager.shared.saveAppSettings()
-        }), for: .editingDidEnd)
+        }), for: .allEditingEvents)
         userInfoView.addSubview(usernameTextField)
         
         let carView = UIView()
@@ -152,16 +157,14 @@ private extension SettingsViewController {
         segmentedControl.selectedSegmentIndex = Manager.shared.appSettings.gameSpeed.rawValue
         segmentedControl.addAction(UIAction(handler: { _ in
             Manager.shared.appSettings.gameSpeed = GameSpeed(rawValue: self.segmentedControl.selectedSegmentIndex) ??  Manager.shared.appSettings.gameSpeed
-            StorageManager.shared.saveAppSettings()
         }), for: .valueChanged)
         gameSpeedView.addSubview(segmentedControl)
         
+        bckgImage.snp.makeConstraints { make in
+            make.top.left.right.bottom.equalToSuperview()
+        }
+        
         NSLayoutConstraint.activate([
-            bckgImage.leftAnchor.constraint(equalTo: view.leftAnchor),
-            bckgImage.rightAnchor.constraint(equalTo: view.rightAnchor),
-            bckgImage.topAnchor.constraint(equalTo: view.topAnchor),
-            bckgImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
             containerView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.horizontalSpacing),
             containerView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -Constants.horizontalSpacing),
             containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.topSpacing),
