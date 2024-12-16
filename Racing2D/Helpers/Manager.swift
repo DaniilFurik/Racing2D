@@ -40,7 +40,7 @@ extension Manager {
             return appSettings.barrierImage
         }
         
-        return [GlobalConstants.firstBarrierImage, GlobalConstants.secondBarrierImage, GlobalConstants.thirdBarrierImage].randomElement()!
+        return GlobalConstants.barrierArray.randomElement()!
     }
     
     func getSortedRecords() -> Dictionary<String, [RecordModel]> {

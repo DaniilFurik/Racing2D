@@ -99,7 +99,10 @@ private extension SettingsViewController {
         barrierImageLabel.text = Constants.barrierImageText
         barrierView.addSubview(barrierImageLabel)
         
-        let barriersView = ImageListView(images: [GlobalConstants.firstBarrierImage, GlobalConstants.secondBarrierImage, GlobalConstants.thirdBarrierImage, GlobalConstants.randomBarrierImage], typeImage: TypeImage.barriers)
+        var barrierArray = GlobalConstants.barrierArray
+        barrierArray.insert(GlobalConstants.randomBarrierImage, at: .zero)
+        
+        let barriersView = ImageListView(images: barrierArray, typeImage: TypeImage.barriers)
         barrierView.addSubview(barriersView)
         
         let gameSpeedView = UIView()

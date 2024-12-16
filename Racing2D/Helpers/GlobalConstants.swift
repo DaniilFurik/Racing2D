@@ -48,7 +48,10 @@ final class GlobalConstants {
     static let firstBarrierImage = "FirstBarrier"
     static let secondBarrierImage = "SecondBarrier"
     static let thirdBarrierImage = "ThirdBarrier"
+    static let fourthBarrierImage = "FourthBarrier"
     static let randomBarrierImage = "RandomBarrier"
+    
+    static let barrierArray = [firstBarrierImage, secondBarrierImage, thirdBarrierImage, fourthBarrierImage]
     
     static let backgroundImage = "Background"
 }
