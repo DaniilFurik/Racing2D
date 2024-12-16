@@ -14,7 +14,6 @@ class ImageListView: UIView {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumLineSpacing = GlobalConstants.horizontalSpacing
-        flowLayout.minimumInteritemSpacing = .zero
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.register(ImageCollectionCell.self, forCellWithReuseIdentifier: ImageCollectionCell.identifier)
@@ -60,7 +59,8 @@ extension ImageListView: UICollectionViewDelegate, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.height, height: collectionView.frame.height)
+        let size = collectionView.frame.height * 0.8
+        return CGSize(width: size, height: size)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -74,9 +74,9 @@ extension ImageListView: UICollectionViewDelegate, UICollectionViewDataSource, U
     
     private func configureUI() {
         collectionView.contentInset = .init(
-            top: GlobalConstants.verticalSpacing,
+            top: .zero,
             left: GlobalConstants.horizontalSpacing,
-            bottom: GlobalConstants.verticalSpacing,
+            bottom: .zero,
             right: GlobalConstants.horizontalSpacing
         )
         

@@ -11,7 +11,7 @@ import UIKit
 
 private enum Constants {
     static let topSpacing: CGFloat = 64
-    static let imageSize: CGFloat = 100
+    static let viewHeight: CGFloat = 125
     
     static let settingsTitle = "Settings"
     
@@ -159,7 +159,7 @@ private extension SettingsViewController {
             make.top.equalTo(carImageLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
-            make.height.equalTo(Constants.imageSize)
+            make.height.equalTo(Constants.viewHeight)
         }
         
         barrierView.snp.makeConstraints { make in
@@ -177,7 +177,7 @@ private extension SettingsViewController {
             make.left.right.equalToSuperview()
             make.top.equalTo(barrierImageLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
             make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
-            make.height.equalTo(Constants.imageSize / 1.5)
+            make.height.equalTo(Constants.viewHeight / 1.5)
         }
         
         gameSpeedView.snp.makeConstraints { make in
