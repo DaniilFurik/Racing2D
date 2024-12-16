@@ -29,7 +29,9 @@ class NavigationButton: UIButton {
         titleLabel?.font = .systemFont(ofSize: Constants.fontSize)
         setTitle(title, for: .normal)
         
-        widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
-        heightAnchor.constraint(equalToConstant: Constants.height).isActive = true
+        snp.makeConstraints { make in
+            make.width.equalTo(Constants.width)
+            make.height.equalTo(Constants.height)
+        }
     }
 }

@@ -8,9 +8,15 @@
 import UIKit
 
 final class StorageManager {
+    // MARK: - Properties
+    
     static let shared = StorageManager()
     
     private init() { }
+}
+
+extension StorageManager {
+    // MARK: - Methods
     
     func saveAppSettings() {
         UserDefaults.standard.set(encodable: Manager.shared.appSettings, forKey: .keyAppSettings)

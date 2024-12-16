@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - Constants
+
 private enum Constants {
     static let cornerRadius: CGFloat = 16
     static let offset: CGFloat = 10
@@ -14,15 +16,15 @@ private enum Constants {
 }
 
 extension UIView {
+    // MARK: - Methods
+    
     func dropShadow() {
-        layer.masksToBounds = false // тень за границей экран
+        layer.masksToBounds = false
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = Constants.opacity
         layer.shadowRadius = Constants.cornerRadius
         layer.shadowOffset = CGSize(width: Constants.offset, height: Constants.offset)
         layer.shadowPath = UIBezierPath(rect: bounds).cgPath
-       
-        //layer.shouldRasterize = true  // делает тень более грубой (более натуральной), но кривит шрифты
     }
     
     func addGradient() {

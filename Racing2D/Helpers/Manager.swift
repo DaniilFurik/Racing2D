@@ -8,6 +8,8 @@
 import Foundation
 
 final class Manager {
+    // MARK: - Properties
+    
     static let shared = Manager()
     
     var appSettings = AppSettingsModel()
@@ -15,6 +17,10 @@ final class Manager {
     private init() {
         appSettings = StorageManager.shared.getAppSettings()
     }
+}
+
+extension Manager {
+    // MARK: - Methods
     
     func getMultGameSpeed() -> Double {
         switch appSettings.gameSpeed {

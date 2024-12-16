@@ -10,9 +10,6 @@ import UIKit
 // MARK: - Constants
 
 private enum Constants {
-    static let horizontalSpacing: CGFloat = 16
-    static let verticalSpacing: CGFloat = 8
-    
     static let smallFontSize: CGFloat = 12
     static let bigFontSize: CGFloat = 18
     
@@ -34,18 +31,6 @@ class RecordTableCell: UITableViewCell {
         label.lineBreakMode = .byTruncatingHead
         return label
     }()
-    
-    // MARK: - Constructor
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        configureUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 extension RecordTableCell {
@@ -58,19 +43,21 @@ extension RecordTableCell {
         contentView.addSubview(scoreLabel)
         
         usernameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.verticalSpacing)
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
         scoreLabel.snp.makeConstraints { make in
-            make.top.equalTo(usernameLabel.snp.bottom).offset(Constants.verticalSpacing)
+            make.top.equalTo(usernameLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
             make.left.right.equalTo(usernameLabel)
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
     }
     
     func initData(data: RecordModel) {
+        configureUI()
+        
         let firstAttr = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: Constants.smallFontSize),
         ]

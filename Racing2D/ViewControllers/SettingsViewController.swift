@@ -11,9 +11,7 @@ import UIKit
 
 private enum Constants {
     static let topSpacing: CGFloat = 64
-    static let verticalSpacing: CGFloat = 8
-    static let horizontalSpacing: CGFloat = 16
-    static let imageSize: CGFloat = 80
+    static let imageSize: CGFloat = 100
     
     static let settingsTitle = "Settings"
     
@@ -44,7 +42,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
+        //view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
         
         configureUI()
     }
@@ -91,20 +89,8 @@ private extension SettingsViewController {
         carImageLabel.text = Constants.carImageText
         carView.addSubview(carImageLabel)
         
-        let carsView = UIView()
+        let carsView = ImageListView(images: [GlobalConstants.firstCarImage, GlobalConstants.secondCarImage, GlobalConstants.thirdCarImage, GlobalConstants.fourthCarImage], typeImage: TypeImage.cars)
         carView.addSubview(carsView)
-        
-        let firstCarImage = UIImageView()
-        firstCarImage.image = UIImage(named: GlobalConstants.firstCarImage)
-        carsView.addSubview(firstCarImage)
-        
-        let secondCarImage = UIImageView()
-        secondCarImage.image = UIImage(named: GlobalConstants.secondCarImage)
-        carsView.addSubview(secondCarImage)
-        
-        let thirdCarImage = UIImageView()
-        thirdCarImage.image = UIImage(named: GlobalConstants.thirdCarImage)
-        carsView.addSubview(thirdCarImage)
         
         let barrierView = UIView()
         containerView.addSubview(barrierView)
@@ -113,24 +99,8 @@ private extension SettingsViewController {
         barrierImageLabel.text = Constants.barrierImageText
         barrierView.addSubview(barrierImageLabel)
         
-        let barriersView = UIView()
+        let barriersView = ImageListView(images: [GlobalConstants.firstBarrierImage, GlobalConstants.secondBarrierImage, GlobalConstants.thirdBarrierImage, GlobalConstants.randomBarrierImage], typeImage: TypeImage.barriers)
         barrierView.addSubview(barriersView)
-        
-        let firstBarrierImage = UIImageView()
-        firstBarrierImage.image = UIImage(named: GlobalConstants.firstBarrierImage)
-        barriersView.addSubview(firstBarrierImage)
-        
-        let secondBarrierImage = UIImageView()
-        secondBarrierImage.image = UIImage(named: GlobalConstants.secondBarrierImage)
-        barriersView.addSubview(secondBarrierImage)
-        
-        let thirdBarrierImage = UIImageView()
-        thirdBarrierImage.image = UIImage(named: GlobalConstants.thirdBarrierImage)
-        barriersView.addSubview(thirdBarrierImage)
-        
-        let randomBarrierImage = UIImageView()
-        randomBarrierImage.image = UIImage(named: GlobalConstants.randomBarrierImage)
-        barriersView.addSubview(randomBarrierImage)
         
         let gameSpeedView = UIView()
         containerView.addSubview(gameSpeedView)
@@ -150,8 +120,8 @@ private extension SettingsViewController {
         }
         
         containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(Constants.topSpacing)
         }
         
@@ -160,15 +130,15 @@ private extension SettingsViewController {
         }
         
         usernameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.verticalSpacing)
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
         usernameTextField.snp.makeConstraints { make in
             make.left.right.equalTo(usernameLabel)
-            make.top.equalTo(usernameLabel.snp.bottom).offset(Constants.verticalSpacing)
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
+            make.top.equalTo(usernameLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
         
         carView.snp.makeConstraints { make in
@@ -177,31 +147,16 @@ private extension SettingsViewController {
         }
         
         carImageLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.verticalSpacing)
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
         carsView.snp.makeConstraints { make in
-            make.top.equalTo(carImageLabel.snp.bottom).offset(Constants.verticalSpacing)
+            make.top.equalTo(carImageLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
             make.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
-        }
-        
-        firstCarImage.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.width.height.equalTo(Constants.imageSize)
-        }
-        
-        secondCarImage.snp.makeConstraints { make in
-            make.top.bottom.width.height.equalTo(firstCarImage)
-            make.left.equalTo(firstCarImage.snp.right).offset(Constants.horizontalSpacing)
-        }
-        
-        thirdCarImage.snp.makeConstraints { make in
-            make.top.bottom.width.height.equalTo(secondCarImage)
-            make.left.equalTo(secondCarImage.snp.right).offset(Constants.horizontalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+            make.height.equalTo(Constants.imageSize)
         }
         
         barrierView.snp.makeConstraints { make in
@@ -210,58 +165,38 @@ private extension SettingsViewController {
         }
         
         barrierImageLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.verticalSpacing)
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
         barriersView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(barrierImageLabel.snp.bottom).offset(Constants.verticalSpacing)
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
-        }
-        
-        firstBarrierImage.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.width.height.equalTo(Constants.imageSize / 1.5)
-        }
-        
-        secondBarrierImage.snp.makeConstraints { make in
-            make.top.bottom.width.height.equalTo(firstBarrierImage)
-            make.left.equalTo(firstBarrierImage.snp.right).offset(Constants.horizontalSpacing)
-        }
-        
-        thirdBarrierImage.snp.makeConstraints { make in
-            make.top.bottom.width.height.equalTo(secondBarrierImage)
-            make.left.equalTo(secondBarrierImage.snp.right).offset(Constants.horizontalSpacing)
-        }
-        
-        randomBarrierImage.snp.makeConstraints { make in
-            make.top.bottom.width.height.equalTo(thirdBarrierImage)
-            make.left.equalTo(thirdBarrierImage.snp.right).offset(Constants.horizontalSpacing)
+            make.top.equalTo(barrierImageLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+            make.height.equalTo(Constants.imageSize / 1.5)
         }
         
         gameSpeedView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(barrierView.snp.bottom)
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
         
         gameSpeedLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.verticalSpacing)
-            make.left.equalToSuperview().offset(Constants.horizontalSpacing)
-            make.right.equalToSuperview().inset(Constants.horizontalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
         segmentedControl.snp.makeConstraints { make in
             make.left.right.equalTo(gameSpeedLabel)
-            make.top.equalTo(gameSpeedLabel.snp.bottom).offset(Constants.verticalSpacing)
-            make.bottom.equalToSuperview().inset(Constants.verticalSpacing)
+            make.top.equalTo(gameSpeedLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
     }
     
-    @objc func didTap() {
+    @objc func didTap(_ gesture: UITapGestureRecognizer) {
         view.endEditing(true) // закрыть клавиатуру
     }
 }

@@ -5,9 +5,16 @@
 //  Created by Даниил on 25.11.24.
 //
 
+import UIKit
+
 extension String {
     static let keyRecords = "KeyRecords"
     static let keyAppSettings = "KeyAppSettings"
+}
+
+enum TypeImage {
+    case cars
+    case barriers
 }
 
 enum GameSpeed: Int, Codable {
@@ -17,6 +24,9 @@ enum GameSpeed: Int, Codable {
 }
 
 final class GlobalConstants {
+    static let verticalSpacing: CGFloat = 8
+    static let horizontalSpacing: CGFloat = 16
+    
     static let countOfRecords = 3
     
     static let slowGameSpeed = 1.0

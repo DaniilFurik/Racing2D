@@ -7,11 +7,15 @@
 
 import UIKit
 
+// MARK: - Constants
+
 private extension CGFloat {
     static let numberOfMarkups: CGFloat = 24
+    static let linewidth: CGFloat = 6
 }
 
 class MarkupView: UIView {
+    // MARK: - Methods
     
     override func draw(_ rect: CGRect) {
         // Создаем путь для линии
@@ -21,7 +25,7 @@ class MarkupView: UIView {
         
         // Настройка цвета и ширины линии
         UIColor.white.setStroke() // Цвет линии
-        path.lineWidth = 6 // Ширина линии
+        path.lineWidth = .linewidth // Ширина линии
         
         // Устанавливаем стиль пунктирной линии
         let dashPattern: [CGFloat] = [rect.height / .numberOfMarkups, rect.height / (.numberOfMarkups * 2)] // Длина штриха и пробела
