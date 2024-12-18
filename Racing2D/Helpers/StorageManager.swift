@@ -24,7 +24,7 @@ extension StorageManager {
     
     func saveRecord(_ score: Int) {
         if score > .zero {
-            let record = RecordModel(username: Manager.shared.appSettings.username, score: score, gameSpeed: Manager.shared.appSettings.gameSpeed, avatar: Manager.shared.appSettings.avatarImage)
+            let record = UserRecord(username: Manager.shared.appSettings.username, score: score, gameSpeed: Manager.shared.appSettings.gameSpeed, avatarFileName: Manager.shared.appSettings.avatarFileName)
             
             var array = getRecords()
             array.append(record)
@@ -33,14 +33,14 @@ extension StorageManager {
         }
     }
     
-    func getAppSettings() -> AppSettingsModel {
-        guard let settings = UserDefaults.standard.get(AppSettingsModel.self, forKey: .keyAppSettings) else { return AppSettingsModel() }
+    func getAppSettings() -> AppSettings {
+        guard let settings = UserDefaults.standard.get(AppSettings.self, forKey: .keyAppSettings) else { return AppSettings() }
         
         return settings
     }
     
-    func getRecords() -> [RecordModel] {
-        guard let list = UserDefaults.standard.get([RecordModel].self, forKey: .keyRecords) else { return [] }
+    func getRecords() -> [UserRecord] {
+        guard let list = UserDefaults.standard.get([UserRecord].self, forKey: .keyRecords) else { return [] }
         
         return list
     }

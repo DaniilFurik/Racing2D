@@ -70,10 +70,10 @@ extension RecordTableCell {
         }
     }
     
-    func initData(data: RecordModel) {
+    func initData(data: UserRecord) {
         configureUI()
         
-        avatarImage.image = Manager.shared.getAvatar(fileName: data.avatar)
+        avatarImage.image = Manager.shared.getAvatar(fileName: data.avatarFileName)
         
         let firstAttr = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: Constants.smallFontSize),

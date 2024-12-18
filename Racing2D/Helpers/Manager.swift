@@ -13,7 +13,7 @@ final class Manager {
     
     static let shared = Manager()
     
-    var appSettings = AppSettingsModel()
+    var appSettings = AppSettings()
     
     private init() {
         appSettings = StorageManager.shared.getAppSettings()
@@ -44,16 +44,16 @@ extension Manager {
         return GlobalConstants.barrierArray.randomElement()!
     }
     
-    func getSortedRecords() -> Dictionary<String, [RecordModel]> {
+    func getSortedRecords() -> Dictionary<String, [UserRecord]> {
         let array = StorageManager.shared.getRecords()
         
         return [
             GlobalConstants.fastGameSpeedName:
-                [RecordModel](array.filter { $0.gameSpeed == .fast }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
+                [UserRecord](array.filter { $0.gameSpeed == .fast }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
             GlobalConstants.mediumGameSpeedName:
-                [RecordModel](array.filter { $0.gameSpeed == .medium }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
+                [UserRecord](array.filter { $0.gameSpeed == .medium }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
             GlobalConstants.slowGameSpeedName:
-                [RecordModel](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
+                [UserRecord](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
         ]
     }
     

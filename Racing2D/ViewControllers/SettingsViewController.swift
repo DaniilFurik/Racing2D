@@ -69,7 +69,7 @@ private extension SettingsViewController {
     // MARK: - Methods
     
     func initAvatar() {
-        avatarImage.image = Manager.shared.getAvatar(fileName: Manager.shared.appSettings.avatarImage)
+        avatarImage.image = Manager.shared.getAvatar(fileName: Manager.shared.appSettings.avatarFileName)
         avatarImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(avatarImageTapped)))
     }
     

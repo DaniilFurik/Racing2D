@@ -5,11 +5,11 @@
 //  Created by Даниил on 26.11.24.
 //
 
-final class AppSettingsModel: Codable {
+final class AppSettings: Codable {
     var username: String
     var carImage: String
     var barrierImage: String
-    var avatarImage: String
+    var avatarFileName: String
     var gameSpeed: GameSpeed
     
     init() {
@@ -17,6 +17,6 @@ final class AppSettingsModel: Codable {
         carImage = GlobalConstants.firstCarImage
         barrierImage = GlobalConstants.randomBarrier
         gameSpeed = GameSpeed.slow
-        avatarImage = .empty
+        avatarFileName = .empty
     }
 }

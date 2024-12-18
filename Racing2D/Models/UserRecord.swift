@@ -5,16 +5,16 @@
 //  Created by Даниил on 2.12.24.
 //
 
-final class RecordModel: Codable {
+final class UserRecord: Codable {
     let username: String
     let score: Int
     let gameSpeed: GameSpeed
-    let avatar: String
+    let avatarFileName: String
     
-    init(username: String, score: Int, gameSpeed: GameSpeed, avatar: String) {
+    init(username: String, score: Int, gameSpeed: GameSpeed, avatarFileName: String) {
         self.username = username
         self.score = score
         self.gameSpeed = gameSpeed
-        self.avatar = avatar
+        self.avatarFileName = avatarFileName
     }
 }

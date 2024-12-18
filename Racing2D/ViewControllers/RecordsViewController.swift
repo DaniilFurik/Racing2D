@@ -20,7 +20,7 @@ private enum Constants {
 class RecordsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     // MARK: - Properties
     
-    private var sortedRecords: Dictionary<String, [RecordModel]> = [:]
+    private var sortedRecords: Dictionary<String, [UserRecord]> = [:]
     private let titles = [GlobalConstants.fastGameSpeedName, GlobalConstants.mediumGameSpeedName, GlobalConstants.slowGameSpeedName]
     
     // MARK: - Lifecycle
@@ -96,7 +96,7 @@ private extension RecordsViewController {
         }
     }
     
-    func getRecordsForSection(_ section: Int) -> [RecordModel] {
+    func getRecordsForSection(_ section: Int) -> [UserRecord] {
         switch section {
         case 0:
             return sortedRecords[GlobalConstants.fastGameSpeedName] ?? []
