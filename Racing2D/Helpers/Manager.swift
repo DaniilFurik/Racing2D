@@ -57,11 +57,13 @@ extension Manager {
         ]
     }
     
-    func getAvatar(fileName: String) -> UIImage? {
-        if  fileName == .empty {
-            return UIImage(named: GlobalConstants.avatarImage)
+    func getAvatar(fileName: String) -> UIImage {
+        if fileName != .empty {
+            if let image = StorageManager.shared.getImage(fileName: fileName) {
+                return image
+            }
         }
         
-        return StorageManager.shared.getImage(fileName: fileName)
+        return UIImage(named: GlobalConstants.avatarImage)!
     }
 }

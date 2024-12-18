@@ -24,7 +24,11 @@ extension StorageManager {
     
     func saveRecord(_ score: Int) {
         if score > .zero {
-            let record = UserRecord(username: Manager.shared.appSettings.username, score: score, gameSpeed: Manager.shared.appSettings.gameSpeed, avatarFileName: Manager.shared.appSettings.avatarFileName)
+            let record = UserRecord(username: Manager.shared.appSettings.username,
+                                    score: score,
+                                    gameSpeed: Manager.shared.appSettings.gameSpeed,
+                                    avatarFileName: Manager.shared.appSettings.avatarFileName
+            )
             
             var array = getRecords()
             array.append(record)
