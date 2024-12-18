@@ -12,6 +12,7 @@ import UIKit
 private enum Constants {
     static let topSpacing: CGFloat = 64
     static let viewHeight: CGFloat = 125
+    static let avatarSize: CGFloat = 75
     
     static let settingsTitle = "Settings"
     
@@ -37,25 +38,40 @@ class SettingsViewController: UIViewController {
         return segmentedControl
     }()
     
+    private let avatarImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = Constants.avatarSize / 2
+        imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
-        
         configureUI()
+        initAvatar()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        StorageManager.shared.saveAppSettings()
+        if isMovingFromParent {
+            // контроллер удаляется из стека навигации
+            StorageManager.shared.saveAppSettings()
+        }
     }
 }
 
 private extension SettingsViewController {
     // MARK: - Methods
+    
+    func initAvatar() {
+        avatarImage.image = Manager.shared.getAvatar(fileName: Manager.shared.appSettings.avatarImage)
+        avatarImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(avatarImageTapped)))
+    }
     
     func configureUI() {
         view.backgroundColor = .systemBackground
@@ -71,6 +87,8 @@ private extension SettingsViewController {
         
         let userInfoView = UIView()
         containerView.addSubview(userInfoView)
+        
+        userInfoView.addSubview(avatarImage)
         
         let usernameLabel = UILabel()
         usernameLabel.text = Constants.usernameText
@@ -132,16 +150,22 @@ private extension SettingsViewController {
             make.top.left.right.equalTo(containerView)
         }
         
-        usernameLabel.snp.makeConstraints { make in
+        avatarImage.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
             make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
-            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.bottom.equalToSuperview()
+            make.width.height.equalTo(Constants.avatarSize)
         }
         
         usernameTextField.snp.makeConstraints { make in
-            make.left.right.equalTo(usernameLabel)
-            make.top.equalTo(usernameLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
-            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+            make.left.equalTo(avatarImage.snp.right).offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.bottom.equalTo(avatarImage.snp.bottom)
+        }
+        
+        usernameLabel.snp.makeConstraints { make in
+            make.left.right.equalTo(usernameTextField)
+            make.bottom.equalTo(usernameTextField.snp.top).offset(-GlobalConstants.verticalSpacing)
         }
         
         carView.snp.makeConstraints { make in
@@ -199,7 +223,7 @@ private extension SettingsViewController {
         }
     }
     
-    @objc func didTap(_ gesture: UITapGestureRecognizer) {
-        view.endEditing(true) // закрыть клавиатуру
+    @objc func avatarImageTapped() {
+        //Manager.shared.appSettings.avatarImage = StorageManager.shared.saveImage(image: UIImage(named: GlobalConstants.backgroundImage)!)!
     }
 }

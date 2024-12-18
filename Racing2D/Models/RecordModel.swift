@@ -9,10 +9,12 @@ final class RecordModel: Codable {
     let username: String
     let score: Int
     let gameSpeed: GameSpeed
+    let avatar: String
     
-    init(username: String, score: Int, gameSpeed: GameSpeed) {
+    init(username: String, score: Int, gameSpeed: GameSpeed, avatar: String) {
         self.username = username
         self.score = score
         self.gameSpeed = gameSpeed
+        self.avatar = avatar
     }
 }

@@ -9,6 +9,7 @@ final class AppSettingsModel: Codable {
     var username: String
     var carImage: String
     var barrierImage: String
+    var avatarImage: String
     var gameSpeed: GameSpeed
     
     init() {
@@ -16,5 +17,6 @@ final class AppSettingsModel: Codable {
         carImage = GlobalConstants.firstCarImage
         barrierImage = GlobalConstants.randomBarrier
         gameSpeed = GameSpeed.slow
+        avatarImage = .empty
     }
 }

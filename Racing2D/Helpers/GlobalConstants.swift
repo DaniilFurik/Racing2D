@@ -8,6 +8,7 @@
 import UIKit
 
 extension String {
+    static let empty = String()
     static let keyRecords = "KeyRecords"
     static let keyAppSettings = "KeyAppSettings"
 }
@@ -52,6 +53,8 @@ final class GlobalConstants {
     static let randomBarrierImage = "RandomBarrier"
     
     static let barrierArray = [firstBarrierImage, secondBarrierImage, thirdBarrierImage, fourthBarrierImage]
+    
+    static let avatarImage = "Avatar"
     
     static let backgroundImage = "Background"
 }

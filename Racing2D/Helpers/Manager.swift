@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 final class Manager {
     // MARK: - Properties
@@ -54,5 +55,13 @@ extension Manager {
             GlobalConstants.slowGameSpeedName:
                 [RecordModel](array.filter { $0.gameSpeed == .slow }.sorted {$0.score > $1.score}.prefix(GlobalConstants.countOfRecords)),
         ]
+    }
+    
+    func getAvatar(fileName: String) -> UIImage? {
+        if  fileName == .empty {
+            return UIImage(named: GlobalConstants.avatarImage)
+        }
+        
+        return StorageManager.shared.getImage(fileName: fileName)
     }
 }

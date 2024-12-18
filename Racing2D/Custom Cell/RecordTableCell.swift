@@ -12,6 +12,7 @@ import UIKit
 private enum Constants {
     static let smallFontSize: CGFloat = 12
     static let bigFontSize: CGFloat = 18
+    static let avatarSize: CGFloat = 48
     
     static let usernameText = "Username: "
     static let scoreText = "Score: "
@@ -31,6 +32,13 @@ class RecordTableCell: UITableViewCell {
         label.lineBreakMode = .byTruncatingHead
         return label
     }()
+    
+    private let avatarImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = Constants.avatarSize / 2
+        imageView.clipsToBounds = true
+        return imageView
+    }()
 }
 
 extension RecordTableCell {
@@ -41,11 +49,18 @@ extension RecordTableCell {
 
         contentView.addSubview(usernameLabel)
         contentView.addSubview(scoreLabel)
+        contentView.addSubview(avatarImage)
         
+        avatarImage.snp.makeConstraints { make in
+            make.width.height.equalTo(Constants.avatarSize)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.centerY.equalToSuperview()
+        }
+
         usernameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
             make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
-            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.right.equalTo(avatarImage.snp.left).offset(-GlobalConstants.horizontalSpacing)
         }
         
         scoreLabel.snp.makeConstraints { make in
@@ -57,6 +72,8 @@ extension RecordTableCell {
     
     func initData(data: RecordModel) {
         configureUI()
+        
+        avatarImage.image = Manager.shared.getAvatar(fileName: data.avatar)
         
         let firstAttr = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: Constants.smallFontSize),
