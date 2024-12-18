@@ -38,13 +38,7 @@ class SettingsViewController: UIViewController {
         return segmentedControl
     }()
     
-    private let avatarImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = Constants.avatarSize / 2
-        imageView.clipsToBounds = true
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
+    private let avatarImage = AvatarImageView(size: Constants.avatarSize, interactionEnabled: true)
     
     // MARK: - Lifecycle
     

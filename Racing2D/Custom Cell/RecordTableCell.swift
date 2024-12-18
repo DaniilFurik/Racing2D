@@ -33,12 +33,7 @@ class RecordTableCell: UITableViewCell {
         return label
     }()
     
-    private let avatarImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = Constants.avatarSize / 2
-        imageView.clipsToBounds = true
-        return imageView
-    }()
+    private let avatarImage = AvatarImageView(size: Constants.avatarSize)
 }
 
 extension RecordTableCell {
