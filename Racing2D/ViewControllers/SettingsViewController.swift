@@ -52,8 +52,8 @@ class SettingsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if isMovingFromParent {
-            // контроллер удаляется из стека навигации
+        if isMovingFromParent || isBeingDismissed {
+            // контроллер удаляется из стека навигации или закрывается модально
             StorageManager.shared.saveAppSettings()
         }
     }
@@ -218,6 +218,6 @@ private extension SettingsViewController {
     }
     
     @objc func avatarImageTapped() {
-        //Manager.shared.appSettings.avatarImage = StorageManager.shared.saveImage(image: UIImage(named: GlobalConstants.backgroundImage)!)!
+        //Manager.shared.appSettings.avatarFileName = StorageManager.shared.saveImage(image: UIImage(named: GlobalConstants.backgroundImage)!)!
     }
 }

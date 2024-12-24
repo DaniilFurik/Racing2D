@@ -10,7 +10,7 @@ import UIKit
 class ImageListView: UIView {
     //MARK: - Properties
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumLineSpacing = GlobalConstants.horizontalSpacing
@@ -18,7 +18,9 @@ class ImageListView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.register(ImageCollectionCell.self, forCellWithReuseIdentifier: ImageCollectionCell.identifier)
         collectionView.backgroundColor = .clear
-
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
         return collectionView
     }()
     
@@ -32,9 +34,6 @@ class ImageListView: UIView {
         
         self.images = images
         self.typeImage = typeImage
-        
-        collectionView.delegate = self
-        collectionView.dataSource = self
         
         switch typeImage {
         case .cars: setSelectedCarImage()
