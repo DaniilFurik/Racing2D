@@ -11,8 +11,7 @@ import UIKit
 
 private enum Constants {
     static let bigFontSize: CGFloat = 48
-    static let fontSize: CGFloat = 24
-    static let scoreWidth: CGFloat = 125
+    static let fontSize: CGFloat = 18
     static let startGameSize: CGFloat = 200
     static let carWigth: CGFloat = 70
     static let carHeight: CGFloat = 150
@@ -30,6 +29,8 @@ private enum Constants {
     static let grassLeftImage = "GrassLeft"
     static let grassRightImage = "GrassRight"
     
+    static let newRecordText = "New Record:"
+    static let recordText = "Record:"
     static let scoreText = "Score:"
     static let gameOverText = "Game Over"
     static let restartText = "Restart"
@@ -78,6 +79,7 @@ class GameViewController: UIViewController {
     
     private let scoreLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = .zero
         return label
     }()
     
@@ -97,7 +99,7 @@ class GameViewController: UIViewController {
     private var animHeight: CGFloat = .zero
     private var score = Int.zero {
         didSet {
-            scoreLabel.text = "\(Constants.scoreText) \(score)"
+            setScoreInfo()
         }
     }
     private var gameSpeedMult = GlobalConstants.slowGameSpeed
@@ -111,6 +113,7 @@ class GameViewController: UIViewController {
         
         initData()
         configureUI()
+        setScoreInfo()
         startGame()
     }
     
@@ -124,6 +127,20 @@ class GameViewController: UIViewController {
 
 private extension GameViewController {
     // MARK: - Methods
+    
+    func setScoreInfo() {
+        let bestScore = Manager.shared.getBestRecord()
+        
+        if score > bestScore && bestScore > .zero {
+            scoreLabel.text = "\(Constants.newRecordText) \(score)"
+        } else {
+            scoreLabel.text = "\(Constants.scoreText) \(score)"
+            
+            if bestScore > .zero {
+                scoreLabel.text! += "\n\(Constants.recordText) \(bestScore)"
+            }
+        }
+    }
     
     func initData() {
         // барьер должен пройти немного больше высоты экрана, поэтому используем эту переменную вместо высоты экрана
@@ -234,18 +251,22 @@ private extension GameViewController {
         guard let frame = navigationController?.navigationBar.frame else { return }
         
         let scoreView = UIView()
-        scoreView.frame = CGRect(
-            x: view.frame.width - Constants.scoreWidth,
-            y: frame.minY,
-            width: Constants.scoreWidth,
-            height: frame.height
-        )
+        scoreView.roundCorners()
+        scoreView.backgroundColor = .systemBackground.withAlphaComponent(0.5)
         view.addSubview(scoreView)
-        
-        scoreLabel.font = .systemFont(ofSize: Constants.fontSize, weight: .bold)
-        scoreLabel.text = "\(Constants.scoreText) \(score)"
-        scoreLabel.frame = scoreView.bounds
+   
+        scoreView.snp.makeConstraints { make in
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.top.equalTo(frame.minY)
+        }
+    
+        scoreLabel.font = .systemFont(ofSize: Constants.fontSize, weight: .semibold)
         scoreView.addSubview(scoreLabel)
+        
+        scoreLabel.snp.makeConstraints { make in
+            make.top.left.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.bottom.right.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+        }
     }
     
     func startGame() {
@@ -295,19 +316,21 @@ private extension GameViewController {
     func stopGame() {
         disableControls(true)
         
+        // показываем результат
+        showResultAlert()
+        
         // сохраняем результат
         StorageManager.shared.saveRecord(score)
         
         // cбрасываем таймеры и view
         resetViews()
         resetTimers()
-        
-        // показываем результат
-        showResultAlert()
     }
     
     func showResultAlert() {
-        let alert = UIAlertController(title: Constants.gameOverText, message: "\(Constants.yourScoreText) \(score)", preferredStyle: .alert)
+        let message = score > Manager.shared.getBestRecord() ? "\(Constants.newRecordText) \(score)" : "\(Constants.yourScoreText) \(score)"
+        
+        let alert = UIAlertController(title: Constants.gameOverText, message: message, preferredStyle: .alert)
         alert.view.tintColor = .systemGreen
         alert.addAction(UIAlertAction(title: Constants.closeGameText, style: .cancel, handler: { _ in
             self.navigationController?.popViewController(animated: true)

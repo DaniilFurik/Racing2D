@@ -66,4 +66,10 @@ extension Manager {
         
         return UIImage(named: GlobalConstants.avatarImage)!
     }
+    
+    func getBestRecord() -> Int {
+        let records = StorageManager.shared.getRecords().filter { $0.gameSpeed == appSettings.gameSpeed }
+    
+        return records.max { $0.score < $1.score }?.score ?? .zero
+    }
 }
