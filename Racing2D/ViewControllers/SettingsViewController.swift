@@ -15,6 +15,12 @@ private enum Constants {
     static let avatarSize: CGFloat = 75
     
     static let settingsTitle = "Settings"
+    static let menuTitle = "Select photo source"
+    static let cameraTitle = "Camera"
+    static let libraryTitle = "Photo Library"
+    
+    static let cameraImage = "camera"
+    static let libraryImage = "photo"
     
     static let usernameText = "Username:"
     static let usernamePlaceholder = "Enter username"
@@ -39,6 +45,22 @@ class SettingsViewController: UIViewController {
     }()
     
     private let avatarImage = AvatarImageView(size: Constants.avatarSize, interactionEnabled: true)
+    private lazy var avatarMenuButton: UIButton = {
+        let menu = UIMenu(title: Constants.menuTitle, children: [
+            UIAction(title: Constants.cameraTitle, image: UIImage(systemName: Constants.cameraImage)) { _ in
+                self.showPhotoPicker(with: .camera, delegate: self)
+            },
+            UIAction(title: Constants.libraryTitle, image: UIImage(systemName: Constants.libraryImage)) { _ in
+                self.showPhotoPicker(with: .photoLibrary, delegate: self)
+            }
+        ])
+        
+        let button = UIButton()
+        button.menu = menu
+        button.showsMenuAsPrimaryAction = true
+        
+        return button
+    }()
     
     // MARK: - Lifecycle
     
@@ -59,15 +81,15 @@ class SettingsViewController: UIViewController {
     }
 }
 
-private extension SettingsViewController {
+extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - Methods
     
-    func initAvatar() {
+    private func initAvatar() {
         avatarImage.image = Manager.shared.getAvatar(fileName: Manager.shared.appSettings.avatarFileName)
-        avatarImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(avatarImageTapped)))
+        //avatarImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(avatarImageTapped)))
     }
     
-    func configureUI() {
+    private func configureUI() {
         view.backgroundColor = .systemBackground
         title = Constants.settingsTitle
         
@@ -83,7 +105,8 @@ private extension SettingsViewController {
         containerView.addSubview(userInfoView)
         
         userInfoView.addSubview(avatarImage)
-        
+        avatarImage.addSubview(avatarMenuButton)
+
         let usernameLabel = UILabel()
         usernameLabel.text = Constants.usernameText
         userInfoView.addSubview(usernameLabel)
@@ -149,6 +172,10 @@ private extension SettingsViewController {
             make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
             make.bottom.equalToSuperview()
             make.width.height.equalTo(Constants.avatarSize)
+        }
+        
+        avatarMenuButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         usernameTextField.snp.makeConstraints { make in
@@ -217,7 +244,15 @@ private extension SettingsViewController {
         }
     }
     
-    @objc func avatarImageTapped() {
-        //Manager.shared.appSettings.avatarFileName = StorageManager.shared.saveImage(image: UIImage(named: GlobalConstants.backgroundImage)!)!
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            avatarImage.image = image
+        } else if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            avatarImage.image = image
+        }
+        
+        Manager.shared.appSettings.avatarFileName = StorageManager.shared.saveImage(image: avatarImage.image!)!
+        
+        picker.dismiss(animated: true)
     }
 }

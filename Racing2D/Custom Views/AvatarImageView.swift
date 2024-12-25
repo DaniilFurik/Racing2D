@@ -10,7 +10,7 @@ import UIKit
 class AvatarImageView: UIImageView {
     // MARK: - Constructor
     
-    convenience init(size :CGFloat, interactionEnabled: Bool = false) {
+    convenience init(size: CGFloat, interactionEnabled: Bool = false) {
         self.init(frame: .zero)
         
         layer.cornerRadius = size / 2
