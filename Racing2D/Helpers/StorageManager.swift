@@ -27,7 +27,8 @@ extension StorageManager {
             let record = UserRecord(username: Manager.shared.appSettings.username,
                                     score: score,
                                     gameSpeed: Manager.shared.appSettings.gameSpeed,
-                                    avatarFileName: Manager.shared.appSettings.avatarFileName
+                                    avatarFileName: Manager.shared.appSettings.avatarFileName,
+                                    date: Date().timeIntervalSince1970
             )
             
             var array = getRecords()

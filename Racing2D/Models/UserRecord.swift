@@ -10,11 +10,13 @@ final class UserRecord: Codable {
     let score: Int
     let gameSpeed: GameSpeed
     let avatarFileName: String
+    let date: Double
     
-    init(username: String, score: Int, gameSpeed: GameSpeed, avatarFileName: String) {
+    init(username: String, score: Int, gameSpeed: GameSpeed, avatarFileName: String, date: Double) {
         self.username = username
         self.score = score
         self.gameSpeed = gameSpeed
         self.avatarFileName = avatarFileName
+        self.date = date
     }
 }
