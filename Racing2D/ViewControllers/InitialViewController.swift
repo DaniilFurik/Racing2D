@@ -18,7 +18,7 @@ private enum Constants {
     static let verticalSpacing: CGFloat = 48
 }
 
-class ViewController: UIViewController {
+class InitialViewController: UIViewController {
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     }
 }
 
-private extension ViewController {
+private extension InitialViewController {
     // MARK: - Methods
     
     func configureUI() {
