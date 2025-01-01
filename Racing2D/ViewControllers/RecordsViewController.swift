@@ -10,9 +10,6 @@ import UIKit
 // MARK: - Constants
 
 private enum Constants {
-    static let verticalSpacing: CGFloat = 16
-    static let horizontalSpacing: CGFloat = 16
-    
     static let recordsTitle = "Records"
     static let recordCellId = "RecordCell"
 }
@@ -35,7 +32,11 @@ class RecordsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = .clear
+        
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .systemGroupedBackground.withAlphaComponent(0.5)
+        backgroundView.roundCorners()
+        headerView.addSubview(backgroundView)
         
         let titleLabel = UILabel()
         titleLabel.text = titles[section]
@@ -44,11 +45,17 @@ class RecordsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         headerView.addSubview(titleLabel)
 
+        backgroundView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+        }
+        
         titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(headerView.snp.left).offset(Constants.horizontalSpacing)
-            make.right.equalTo(headerView.snp.right).inset(Constants.horizontalSpacing)
-            make.top.equalTo(headerView.snp.top)
-            make.bottom.equalTo(headerView.snp.bottom).inset(Constants.horizontalSpacing / 4)
+            make.left.equalTo(backgroundView.snp.left).offset(GlobalConstants.horizontalSpacing)
+            make.right.equalTo(backgroundView.snp.right).inset(GlobalConstants.horizontalSpacing)
+            make.top.equalTo(backgroundView.snp.top).offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalTo(backgroundView.snp.bottom).inset(GlobalConstants.verticalSpacing)
         }
 
         return headerView
@@ -92,7 +99,7 @@ private extension RecordsViewController {
         
         tableView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(Constants.verticalSpacing)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(GlobalConstants.verticalSpacing)
         }
     }
     

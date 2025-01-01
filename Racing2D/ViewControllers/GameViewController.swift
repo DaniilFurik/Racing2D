@@ -264,8 +264,10 @@ private extension GameViewController {
         scoreView.addSubview(scoreLabel)
         
         scoreLabel.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().offset(GlobalConstants.verticalSpacing)
-            make.bottom.right.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
     }
     
