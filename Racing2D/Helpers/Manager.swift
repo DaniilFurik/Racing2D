@@ -72,4 +72,10 @@ extension Manager {
     
         return records.max { $0.score < $1.score }?.score ?? .zero
     }
+    
+    func getFormattedDate(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = GlobalConstants.dateFormat
+        return formatter.string(from: date)
+    }
 }

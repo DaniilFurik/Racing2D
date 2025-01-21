@@ -36,8 +36,10 @@ class ImageListView: UIView {
         self.typeImage = typeImage
         
         switch typeImage {
-        case .cars: setSelectedCarImage()
-        case .barriers: setSelectedBarrierImage()
+        case .cars:
+            setSelectedCarImage()
+        case .barriers:
+            setSelectedBarrierImage()
         }
         
         configureUI()
@@ -52,7 +54,8 @@ extension ImageListView: UICollectionViewDelegate, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionCell.identifier, for: indexPath) as! ImageCollectionCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionCell.identifier, for: indexPath) as? ImageCollectionCell else { return UICollectionViewCell()}
+
         cell.initData(imageName: images[indexPath.row])
         return cell
     }

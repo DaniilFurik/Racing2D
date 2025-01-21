@@ -18,12 +18,12 @@ private enum Constants {
     static let usernameText = "Username: "
     static let scoreText = "Score: "
     static let dateText = "Date: "
-    
-    static let dateFormat = "dd MMM yyyy HH'h' mm'm' ss's'"
 }
 
 class RecordTableCell: UITableViewCell {
     // MARK: - Properties
+    
+    static var identifier: String { "\(Self.self)" }
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
@@ -43,7 +43,28 @@ class RecordTableCell: UITableViewCell {
         return label
     }()
     
-    private let avatarImage = AvatarImageView(size: Constants.avatarSize)
+    private var avatarImage = AvatarImageView(size: Constants.avatarSize)
+    
+    // MARK: - Lifecycle
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        usernameLabel.text = nil
+        scoreLabel.text = nil
+        dateLabel.text = nil
+        avatarImage = AvatarImageView(size: Constants.avatarSize)
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        configureUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 extension RecordTableCell {
@@ -82,11 +103,6 @@ extension RecordTableCell {
     }
     
     func initData(data: UserRecord) {
-        configureUI()
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = Constants.dateFormat
-        
         avatarImage.image = Manager.shared.getAvatar(fileName: data.avatarFileName)
         
         let firstAttr = [
@@ -107,7 +123,9 @@ extension RecordTableCell {
         
         usernameAttrSrting.append(NSAttributedString(string: data.username, attributes: secondAttr))
         scoreAttrSrting.append(NSAttributedString(string: data.score.description, attributes: secondAttr))
-        dateAttrSrting.append(NSAttributedString(string: formatter.string(from: Date(timeIntervalSince1970: data.date)), attributes: thirdAttr))
+        
+        let dateString = Manager.shared.getFormattedDate(for: Date(timeIntervalSince1970: data.date))
+        dateAttrSrting.append(NSAttributedString(string: dateString, attributes: thirdAttr))
         
         usernameLabel.attributedText = usernameAttrSrting
         scoreLabel.attributedText = scoreAttrSrting

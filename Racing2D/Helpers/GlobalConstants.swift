@@ -55,6 +55,7 @@ final class GlobalConstants {
     static let barrierArray = [firstBarrierImage, secondBarrierImage, thirdBarrierImage, fourthBarrierImage]
     
     static let avatarImage = "Avatar"
-    
     static let backgroundImage = "Background"
+    
+    static let dateFormat = "dd MMM yyyy HH'h' mm'm' ss's'"
 }

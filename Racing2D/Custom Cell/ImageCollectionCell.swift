@@ -11,7 +11,7 @@ import SnapKit
 class ImageCollectionCell: UICollectionViewCell {
     // MARK: - Properties
     
-    static let identifier = "ImageCollectionCell"
+    static var identifier: String { "\(Self.self)" }
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -19,10 +19,30 @@ class ImageCollectionCell: UICollectionViewCell {
         return imageView
     }()
     
+    // MARK: - Lifecycle
+    
     override var isSelected: Bool {
         didSet {
             backgroundColor = isSelected ? .systemGreen : .clear
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        imageView.image = nil
+        isSelected = false
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+        
+        configureUI()
+        roundCorners()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -38,9 +58,6 @@ extension ImageCollectionCell {
     }
     
     func initData(imageName: String) {
-        configureUI()
-        roundCorners()
-        
         imageView.image = UIImage(named: imageName)
     }
 }

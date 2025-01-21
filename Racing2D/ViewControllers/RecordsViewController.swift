@@ -11,7 +11,6 @@ import UIKit
 
 private enum Constants {
     static let recordsTitle = "Records"
-    static let recordCellId = "RecordCell"
 }
 
 class RecordsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -70,7 +69,8 @@ class RecordsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.recordCellId, for: indexPath) as! RecordTableCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RecordTableCell.identifier, for: indexPath) as? RecordTableCell else { return UITableViewCell()}
+
         cell.initData(data: getRecordsForSection(indexPath.section)[indexPath.row])
         return cell
     }
@@ -90,7 +90,9 @@ private extension RecordsViewController {
         tableView.backgroundColor = .clear
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(RecordTableCell.self, forCellReuseIdentifier: Constants.recordCellId)
+        tableView.register(RecordTableCell.self, forCellReuseIdentifier: RecordTableCell.identifier)
+        tableView.estimatedRowHeight = .leastNonzeroMagnitude
+        tableView.rowHeight = UITableView.automaticDimension
         view.addSubview(tableView)
         
         bckgImage.snp.makeConstraints { make in
