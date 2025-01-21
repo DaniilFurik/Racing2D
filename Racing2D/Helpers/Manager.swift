@@ -41,7 +41,7 @@ extension Manager {
             return appSettings.barrierImage
         }
         
-        return GlobalConstants.barrierArray.randomElement()!
+        return GlobalConstants.barrierArray.randomElement() ?? GlobalConstants.firstBarrierImage
     }
     
     func getSortedRecords() -> Dictionary<String, [UserRecord]> {
@@ -64,7 +64,7 @@ extension Manager {
             }
         }
         
-        return UIImage(named: GlobalConstants.avatarImage)!
+        return UIImage(named: GlobalConstants.avatarImage) ?? UIImage()
     }
     
     func getBestRecord() -> Int {

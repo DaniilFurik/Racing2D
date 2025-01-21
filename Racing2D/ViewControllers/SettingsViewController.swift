@@ -251,7 +251,9 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
             avatarImage.image = image
         }
         
-        Manager.shared.appSettings.avatarFileName = StorageManager.shared.saveImage(image: avatarImage.image!)!
+        if let image = avatarImage.image {
+            Manager.shared.appSettings.avatarFileName = StorageManager.shared.saveImage(image: image) ?? .empty
+        }
         
         picker.dismiss(animated: true)
     }

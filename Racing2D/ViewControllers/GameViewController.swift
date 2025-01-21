@@ -136,8 +136,9 @@ private extension GameViewController {
         } else {
             scoreLabel.text = "\(Constants.scoreText) \(score)"
             
-            if bestScore > .zero {
-                scoreLabel.text! += "\n\(Constants.recordText) \(bestScore)"
+            if bestScore > .zero,
+            var text =  scoreLabel.text{
+                text += "\n\(Constants.recordText) \(bestScore)"
             }
         }
     }
