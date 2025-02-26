@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 // MARK: - Constants
 
@@ -105,6 +106,7 @@ class GameViewController: UIViewController {
     private var gameSpeedMult = GlobalConstants.slowGameSpeed
     private var isMoving = false
     private var isGamming = false
+    private let manager = CMMotionManager()
     
     // MARK: - Lifecycle
     
@@ -113,6 +115,7 @@ class GameViewController: UIViewController {
         
         initData()
         configureUI()
+        initControls()
         setScoreInfo()
         startGame()
     }
@@ -153,14 +156,25 @@ private extension GameViewController {
     
     func configureUI() {
         view.backgroundColor = .darkGray
-        view.addGestureRecognizer(controlRecognizer)
-        controlRecognizer.addTarget(self, action: #selector(tranclationCar))
-        controlRecognizer.minimumPressDuration = Constants.smallDelay
-        
+
         initLeftView()
         initRightView()
         initCenterView()
         initScoreView()
+    }
+    
+    func initControls() {
+        switch Manager.shared.appSettings.controlType {
+        case .accelerometer:
+            manager.deviceMotionUpdateInterval = 0.01
+            break
+            
+        case .manual:
+            controlRecognizer.addTarget(self, action: #selector(tranclationCar))
+            controlRecognizer.minimumPressDuration = Constants.smallDelay
+            
+            view.addGestureRecognizer(controlRecognizer)
+        }
     }
     
     func initLeftView() {
@@ -280,6 +294,16 @@ private extension GameViewController {
         _ = Timer.scheduledTimer(withTimeInterval: Constants.middleDelay - Constants.middleDelay * gameSpeedMult, repeats: false) { _ in
             // пересоздаем таймеры
             self.createTimers()
+            
+            if Manager.shared.appSettings.controlType == .accelerometer {
+                self.manager.startAccelerometerUpdates(to: .main) { data, error in
+                    if let data {
+                        UIView.animate(withDuration: Constants.smallDelay, delay: .zero, options: [.curveLinear]) {
+                            self.carImageView.frame.origin.x += Constants.step * CGFloat(data.acceleration.x) / self.gameSpeedMult
+                        }
+                    }
+                }
+            }
         }
         
         // анимируем обочину и машину
@@ -317,6 +341,8 @@ private extension GameViewController {
     }
     
     func stopGame() {
+        manager.stopAccelerometerUpdates()
+        
         disableControls(true)
         
         // показываем результат

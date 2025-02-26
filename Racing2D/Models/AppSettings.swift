@@ -11,6 +11,7 @@ final class AppSettings: Codable {
     var barrierImage: String
     var avatarFileName: String
     var gameSpeed: GameSpeed
+    var controlType: ControlType
     
     init() {
         username =  GlobalConstants.unknownUser
@@ -18,5 +19,6 @@ final class AppSettings: Codable {
         barrierImage = GlobalConstants.randomBarrier
         gameSpeed = GameSpeed.slow
         avatarFileName = .empty
+        controlType = .manual
     }
 }

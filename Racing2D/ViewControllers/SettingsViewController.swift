@@ -27,6 +27,7 @@ private enum Constants {
     static let carImageText = "Select car:"
     static let barrierImageText = "Select barrier:"
     static let gameSpeedText = "Game speed:"
+    static let controlTypeText = "Control type:"
 }
 
 class SettingsViewController: UIViewController {
@@ -39,8 +40,13 @@ class SettingsViewController: UIViewController {
         return textField
     }()
     
-    private let segmentedControl: UISegmentedControl = {
+    private let speedSegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: [GlobalConstants.slowGameSpeedName, GlobalConstants.mediumGameSpeedName, GlobalConstants.fastGameSpeedName])
+        return segmentedControl
+    }()
+    
+    private let controlTypeSegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: [GlobalConstants.manualTypeName, GlobalConstants.accelerometerTypeName])
         return segmentedControl
     }()
     
@@ -147,11 +153,24 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         gameSpeedLabel.text = Constants.gameSpeedText
         gameSpeedView.addSubview(gameSpeedLabel)
         
-        segmentedControl.selectedSegmentIndex = Manager.shared.appSettings.gameSpeed.rawValue
-        segmentedControl.addAction(UIAction(handler: { _ in
-            Manager.shared.appSettings.gameSpeed = GameSpeed(rawValue: self.segmentedControl.selectedSegmentIndex) ??  Manager.shared.appSettings.gameSpeed
+        speedSegmentedControl.selectedSegmentIndex = Manager.shared.appSettings.gameSpeed.rawValue
+        speedSegmentedControl.addAction(UIAction(handler: { _ in
+            Manager.shared.appSettings.gameSpeed = GameSpeed(rawValue: self.speedSegmentedControl.selectedSegmentIndex) ??  Manager.shared.appSettings.gameSpeed
         }), for: .valueChanged)
-        gameSpeedView.addSubview(segmentedControl)
+        gameSpeedView.addSubview(speedSegmentedControl)
+        
+        let controlTypeView = UIView()
+        containerView.addSubview(controlTypeView)
+        
+        let controlTypeLabel = UILabel()
+        controlTypeLabel.text = Constants.controlTypeText
+        controlTypeView.addSubview(controlTypeLabel)
+        
+        controlTypeSegmentedControl.selectedSegmentIndex = Manager.shared.appSettings.controlType.rawValue
+        controlTypeSegmentedControl.addAction(UIAction(handler: { _ in
+            Manager.shared.appSettings.controlType = ControlType(rawValue: self.controlTypeSegmentedControl.selectedSegmentIndex) ??  Manager.shared.appSettings.controlType
+        }), for: .valueChanged)
+        controlTypeView.addSubview(controlTypeSegmentedControl)
         
         bckgImage.snp.makeConstraints { make in
             make.top.left.right.bottom.equalToSuperview()
@@ -228,7 +247,6 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         gameSpeedView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(barrierView.snp.bottom)
-            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
         
         gameSpeedLabel.snp.makeConstraints { make in
@@ -237,9 +255,27 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
             make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
         }
         
-        segmentedControl.snp.makeConstraints { make in
+        speedSegmentedControl.snp.makeConstraints { make in
             make.left.right.equalTo(gameSpeedLabel)
             make.top.equalTo(gameSpeedLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+        }
+        
+        controlTypeView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(gameSpeedView.snp.bottom)
+            make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
+        }
+        
+        controlTypeLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(GlobalConstants.verticalSpacing)
+            make.left.equalToSuperview().offset(GlobalConstants.horizontalSpacing)
+            make.right.equalToSuperview().inset(GlobalConstants.horizontalSpacing)
+        }
+        
+        controlTypeSegmentedControl.snp.makeConstraints { make in
+            make.left.right.equalTo(controlTypeLabel)
+            make.top.equalTo(controlTypeLabel.snp.bottom).offset(GlobalConstants.verticalSpacing)
             make.bottom.equalToSuperview().inset(GlobalConstants.verticalSpacing)
         }
     }

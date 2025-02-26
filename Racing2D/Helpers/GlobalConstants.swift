@@ -24,6 +24,11 @@ enum GameSpeed: Int, Codable {
     case fast = 2
 }
 
+enum ControlType: Int, Codable {
+    case manual = 0
+    case accelerometer = 1
+}
+
 final class GlobalConstants {
     static let verticalSpacing: CGFloat = 8
     static let horizontalSpacing: CGFloat = 16
@@ -37,6 +42,9 @@ final class GlobalConstants {
     static let slowGameSpeedName = "Slow Speed"
     static let mediumGameSpeedName = "Middle Speed"
     static let fastGameSpeedName = "Fast Speed"
+    
+    static let manualTypeName = "Manual"
+    static let accelerometerTypeName = "Accelerometer"
     
     static let randomBarrier = "RandomBarrier"
     static let unknownUser = "Unknown"
